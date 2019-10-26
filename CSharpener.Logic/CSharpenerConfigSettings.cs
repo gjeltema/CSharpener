@@ -49,12 +49,19 @@ static
 name
 numberofmethodargs
 MODIFIER_SORT_ORDER_END
+
+LINE_BREAK_LENGTH
+150
+LINE_BREAK_LENGTH_END
 ";
         public const string HeaderSectionName = "HEADER";
         public const string KindSortOrderSectionName = "KIND_SORT_ORDER";
+        public const string LineBreakLengthName = "LINE_BREAK_LENGTH";
         public const string ModifierSectionName = "MODIFIER_SORT_ORDER";
         private const string SectionEnding = "_END";
         private static IList<string> configurationItems;
+
+        public static int LengthOfLineToBreakOn { get; private set; }
 
         public static IList<string> GetConfigItemsForSection(string configurationSectionName)
         {
@@ -86,9 +93,22 @@ MODIFIER_SORT_ORDER_END
         }
 
         public static void InitializeSettings(IList<string> configurationItems)
-            => CSharpenerConfigSettings.configurationItems = configurationItems;
+        {
+            CSharpenerConfigSettings.configurationItems = configurationItems;
+            InitializeLengthOfLine();
+        }
 
         private static int GetStartingIndex(string configurationSectionName)
             => configurationItems.IndexOf(configurationSectionName);
+
+        private static void InitializeLengthOfLine()
+        {
+            IList<string> lineLengthRaw = GetConfigItemsForSection(LineBreakLengthName);
+            if (lineLengthRaw.Count != 1)
+                return;
+
+            bool ableToParse = int.TryParse(lineLengthRaw[0], out int lengthOfLine);
+            LengthOfLineToBreakOn = ableToParse ? lengthOfLine : 150;
+        }
     }
 }

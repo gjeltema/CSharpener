@@ -32,6 +32,12 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             return base.VisitClassDeclaration(sortedNode);
         }
 
+        public override SyntaxNode VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
+        {
+            InterfaceDeclarationSyntax sortedInterfaceNode = SortInterfaceNode(node);
+            return base.VisitInterfaceDeclaration(sortedInterfaceNode);
+        }
+
         private ClassDeclarationSyntax SortClassNode(ClassDeclarationSyntax classDeclaration)
         {
             var membersOfClass = classDeclaration.Members.ToList();
@@ -43,6 +49,19 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             ClassDeclarationSyntax classDeclarationNodeWithoutNodes = classDeclaration.RemoveNodes(membersOfClass, SyntaxRemoveOptions.KeepNoTrivia);
             ClassDeclarationSyntax finalClassDeclarationNode = classDeclarationNodeWithoutNodes.WithMembers(new SyntaxList<MemberDeclarationSyntax>(membersOfClass));
             return finalClassDeclarationNode;
+        }
+
+        private InterfaceDeclarationSyntax SortInterfaceNode(InterfaceDeclarationSyntax interfaceDeclaration)
+        {
+            var membersOfInterface = interfaceDeclaration.Members.ToList();
+            var nodeData = membersOfInterface.ToDictionary(x => x, x => new CSharpSyntaxNodeData(x));
+
+            IComparer<MemberDeclarationSyntax> comparer = new NodeSorter(nodeData, sortingConfiguration);
+            membersOfInterface.Sort(comparer);
+
+            InterfaceDeclarationSyntax interfaceDeclarationNodeWithoutNodes = interfaceDeclaration.RemoveNodes(membersOfInterface, SyntaxRemoveOptions.KeepNoTrivia);
+            InterfaceDeclarationSyntax finalInterfaceDeclarationNode = interfaceDeclarationNodeWithoutNodes.WithMembers(new SyntaxList<MemberDeclarationSyntax>(membersOfInterface));
+            return finalInterfaceDeclarationNode;
         }
 
         private class NodeSorter : IComparer<MemberDeclarationSyntax>

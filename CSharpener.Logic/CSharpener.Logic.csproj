@@ -54,6 +54,7 @@
     <Compile Include="Sorting\CSharpSyntaxNodeDataComparers.cs" />
     <Compile Include="Sorting\SortingConfiguration.cs" />
     <Compile Include="Sorting\SyntaxNodeData.cs" />
+    <Compile Include="Trivia\LongLineFormatter.cs" />
     <Compile Include="Trivia\NewlineFormatter.cs" />
     <Compile Include="Trivia\RegionRemover.cs" />
     <Compile Include="Usings\UsingsPlacer.cs" />
