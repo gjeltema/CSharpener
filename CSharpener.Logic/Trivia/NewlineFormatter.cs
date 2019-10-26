@@ -25,6 +25,12 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return base.VisitClassDeclaration(formattedNode);
         }
 
+        public override SyntaxNode VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
+        {
+            var formattedNode = FormatNewlines(node) as InterfaceDeclarationSyntax;
+            return base.VisitInterfaceDeclaration(formattedNode);
+        }
+
         public override SyntaxNode VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
         {
             var formattedNode = FormatNewlines(node) as NamespaceDeclarationSyntax;

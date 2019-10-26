@@ -97,6 +97,100 @@ LINE_BREAK_LENGTH_END
         }
     }
 }";
+        public const string InterfaceBeforeSorting = @"namespace TestDummy
+{
+
+    using System;
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+
+    class Program : IProgram
+    {
+        private int numberOfSomething; // End of line comment
+
+        public Program()
+        {
+        }
+    }
+
+    /// <summary>
+    /// This is the interface that declares some useful functionality.
+    /// </summary>
+    internal interface IProgram
+    {
+        string ZZShouldBeAtTheEnd(string moreInput);
+        int GetSomeData(int input);
+        double AABeginning(int data, string moarData);
+
+        void LaterFunctionButNotLast();
+    }
+}";
+        public const string InterfaceAfterSorting = @"namespace TestDummy
+{
+
+    using System;
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+
+    class Program : IProgram
+    {
+        private int numberOfSomething; // End of line comment
+
+        public Program()
+        {
+        }
+    }
+
+    /// <summary>
+    /// This is the interface that declares some useful functionality.
+    /// </summary>
+    internal interface IProgram
+    {
+        double AABeginning(int data, string moarData);
+        int GetSomeData(int input);
+
+        void LaterFunctionButNotLast();
+        string ZZShouldBeAtTheEnd(string moreInput);
+    }
+}";
+        public const string InterfaceAfterSortingAndFormattingNewlines = @"namespace TestDummy
+{
+    using System;
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+
+    class Program : IProgram
+    {
+        private int numberOfSomething; // End of line comment
+
+        public Program()
+        {
+        }
+    }
+
+    /// <summary>
+    /// This is the interface that declares some useful functionality.
+    /// </summary>
+    internal interface IProgram
+    {
+        double AABeginning(int data, string moarData);
+
+        int GetSomeData(int input);
+
+        void LaterFunctionButNotLast();
+
+        string ZZShouldBeAtTheEnd(string moreInput);
+    }
+}";
         public const string ClassWithLongLines = @"namespace TestDummy
 {
     using System;
