@@ -58,6 +58,7 @@ LINE_BREAK_LENGTH_END
         public const string KindSortOrderSectionName = "KIND_SORT_ORDER";
         public const string LineBreakLengthName = "LINE_BREAK_LENGTH";
         public const string ModifierSectionName = "MODIFIER_SORT_ORDER";
+        private const int DefaultLineBreakLength = 200;
         private const string SectionEnding = "_END";
         private static IList<string> configurationItems;
 
@@ -108,7 +109,7 @@ LINE_BREAK_LENGTH_END
                 return;
 
             bool ableToParse = int.TryParse(lineLengthRaw[0], out int lengthOfLine);
-            LengthOfLineToBreakOn = ableToParse ? lengthOfLine : 150;
+            LengthOfLineToBreakOn = ableToParse ? lengthOfLine : DefaultLineBreakLength;
         }
     }
 }

@@ -1,74 +1,113 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿// --------------------------------------------------------------------
+// LongLineFormatter.cs Copyright 2019 Craig Gjeltema
+// --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Trivia
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
+
     public sealed class LongLineFormatter : CSharpSyntaxRewriter
     {
-        private int testVal;
+        private readonly string IndentSpacing = "    ";
+        private readonly int MaxLengthOfLine;
+        private readonly string[] NewlineSeparator = new[] { Environment.NewLine };
 
-        public int test => 5;
+        public LongLineFormatter(int maxLengthOfLine)
+        {
+            MaxLengthOfLine = maxLengthOfLine;
+        }
 
-        public int test2() => testVal = 5;
+        public override SyntaxNode VisitAssignmentExpression(AssignmentExpressionSyntax node)
+        {
+            AssignmentExpressionSyntax newNode = SplitLongLinesOnDotToken(node);
+            return base.VisitAssignmentExpression(newNode);
+        }
 
-        // Test these out next time.  Might be a better solution than Constructor/MethodDeclarationSyntax.
+        public override SyntaxNode VisitFieldDeclaration(FieldDeclarationSyntax node)
+        {
+            string nodeString = node.ToFullString();
+            string[] nodeLines = nodeString.Split(NewlineSeparator, StringSplitOptions.RemoveEmptyEntries);
+            bool anyLineTooLong = nodeLines.Any(x => x.Length > MaxLengthOfLine);
+            if (!anyLineTooLong)
+                return base.VisitFieldDeclaration(node);
+
+            SyntaxToken firstEqualsToken = node.DescendantTokens().FirstOrDefault(x => x.Kind() is SyntaxKind.EqualsToken);
+            if (firstEqualsToken.IsKind(SyntaxKind.None))
+                return base.VisitFieldDeclaration(node);
+
+            SyntaxTrivia newLeadingTrivia = GetNewLeadingTrivia(nodeLines);
+            SyntaxToken newEqualsToken = FormatEqualsTokenWhitespace(firstEqualsToken, newLeadingTrivia);
+            FieldDeclarationSyntax newNode = node.ReplaceToken(firstEqualsToken, newEqualsToken);
+            return base.VisitFieldDeclaration(newNode);
+        }
+
         public override SyntaxNode VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node)
         {
-            return base.VisitLocalDeclarationStatement(node);
+            LocalDeclarationStatementSyntax newNode = SplitLongLinesOnDotToken(node);
+            return base.VisitLocalDeclarationStatement(newNode);
         }
 
-        public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
+        private SyntaxToken FormatDotTokenWhitespace(SyntaxToken token, SyntaxTrivia newLeadingTrivia)
         {
-            return base.VisitInvocationExpression(node);
+            return token.WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed, newLeadingTrivia).WithTrailingTrivia();
         }
 
-
-
-        public override SyntaxNode VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
+        private SyntaxToken FormatEqualsTokenWhitespace(SyntaxToken token, SyntaxTrivia newLeadingTrivia)
         {
-            int lengthOfLine = CSharpenerConfigSettings.
-                LengthOfLineToBreakOn;
-
-            BreakLongLines(node);
-            return base.VisitConstructorDeclaration(node);
+            return token.WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed, newLeadingTrivia);
         }
 
-        //public override SyntaxNode VisitBlock(BlockSyntax node)
-        //{
-        //    //int lengthOfLine = CSharpenerConfigSettings.LengthOfLineToBreakOn;
-        //    //string startingNodeText = node.ToFullString();
-        //    return base.VisitBlock(node);
-        //}
-
-        public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
+        private string GetFirstNonEmptyString(string[] nodeLines)
         {
-            BreakLongLines(node);
-            return base.VisitMethodDeclaration(node);
+            return nodeLines.First(x => x.Trim().Length > 0);
         }
 
-        public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
+        private SyntaxTrivia GetNewLeadingTrivia(string[] nodeLines)
         {
-            return base.VisitClassDeclaration(node);
+            string firstNonEmptyString = GetFirstNonEmptyString(nodeLines);
+            int leadingWhitespaceLength = IndexOfFirstNonWhitespace(firstNonEmptyString);
+            string leadingSpaces = GetSpaceString(leadingWhitespaceLength);
+            string leadingSpacesWithIndent = leadingSpaces + IndentSpacing;
+            SyntaxTrivia newLeadingTrivia = SyntaxFactory.SyntaxTrivia(SyntaxKind.WhitespaceTrivia, leadingSpacesWithIndent);
+            return newLeadingTrivia;
         }
 
-        private SyntaxNode BreakLongLines(BaseMethodDeclarationSyntax rootNode)
+        private string GetSpaceString(int numberOfSpaces)
         {
-            string startingNodeText = rootNode.ToFullString();
+            return new string(' ', numberOfSpaces);
+        }
 
-            BlockSyntax body = rootNode.Body;
+        private int IndexOfFirstNonWhitespace(string input)
+        {
+            for (int i = 0; i < input.Length; i++)
+            {
+                char currentChar = input[i];
+                if (!char.IsWhiteSpace(currentChar))
+                    return i;
+            }
+            return -1;
+        }
 
-            var childNodes = body.ChildNodes().ToList();
+        private TSyntaxNode SplitLongLinesOnDotToken<TSyntaxNode>(TSyntaxNode node) where TSyntaxNode : SyntaxNode
+        {
+            string nodeString = node.ToFullString();
+            string[] nodeLines = nodeString.Split(NewlineSeparator, StringSplitOptions.RemoveEmptyEntries);
+            bool anyLineTooLong = nodeLines.Any(x => x.Length > MaxLengthOfLine);
+            if (!anyLineTooLong)
+                return node;
 
-            return rootNode;
+            SyntaxTrivia newLeadingTrivia = GetNewLeadingTrivia(nodeLines);
 
-            //BaseMethodDeclarationSyntax finalNode = rootNode.WithBody(body);
-            //return finalNode;
+            IEnumerable<SyntaxNodeOrToken> descendants = node.DescendantNodesAndTokensAndSelf(x => !(x is LambdaExpressionSyntax));
+            IList<SyntaxToken> descendantDotTokens = descendants.Where(x => x.Kind() is SyntaxKind.DotToken).Select(x => x.AsToken()).ToList();
+            IDictionary<SyntaxToken, SyntaxToken> newDotTokens = descendantDotTokens.ToDictionary(x => x, x => FormatDotTokenWhitespace(x, newLeadingTrivia));
+            TSyntaxNode newNode = node.ReplaceTokens(descendantDotTokens, (x, y) => newDotTokens[x]);
+            return newNode;
         }
     }
 }
