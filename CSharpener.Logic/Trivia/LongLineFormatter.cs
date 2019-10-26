@@ -40,8 +40,8 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             if (firstEqualsToken.IsKind(SyntaxKind.None))
                 return base.VisitFieldDeclaration(node);
 
-            SyntaxTrivia newLeadingTrivia = GetNewLeadingTrivia(nodeLines);
-            SyntaxToken newEqualsToken = FormatEqualsTokenWhitespace(firstEqualsToken, newLeadingTrivia);
+            SyntaxTrivia newLeadingTrivia = GetNewTrivia(nodeLines);
+            SyntaxToken newEqualsToken = FormatEqualsOrArrowTokenWhitespace(firstEqualsToken, newLeadingTrivia);
             FieldDeclarationSyntax newNode = node.ReplaceToken(firstEqualsToken, newEqualsToken);
             return base.VisitFieldDeclaration(newNode);
         }
@@ -57,7 +57,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return token.WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed, newLeadingTrivia).WithTrailingTrivia();
         }
 
-        private SyntaxToken FormatEqualsTokenWhitespace(SyntaxToken token, SyntaxTrivia newLeadingTrivia)
+        private SyntaxToken FormatEqualsOrArrowTokenWhitespace(SyntaxToken token, SyntaxTrivia newLeadingTrivia)
         {
             return token.WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed, newLeadingTrivia);
         }
@@ -67,10 +67,15 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return nodeLines.First(x => x.Trim().Length > 0);
         }
 
-        private SyntaxTrivia GetNewLeadingTrivia(string[] nodeLines)
+        private SyntaxTrivia GetNewTrivia(string[] nodeLines)
         {
             string firstNonEmptyString = GetFirstNonEmptyString(nodeLines);
-            int leadingWhitespaceLength = IndexOfFirstNonWhitespace(firstNonEmptyString);
+            return GetNewTrivia(firstNonEmptyString);
+        }
+
+        private SyntaxTrivia GetNewTrivia(string nodeLine)
+        {
+            int leadingWhitespaceLength = IndexOfFirstNonWhitespace(nodeLine);
             string leadingSpaces = GetSpaceString(leadingWhitespaceLength);
             string leadingSpacesWithIndent = leadingSpaces + IndentSpacing;
             SyntaxTrivia newLeadingTrivia = SyntaxFactory.SyntaxTrivia(SyntaxKind.WhitespaceTrivia, leadingSpacesWithIndent);
@@ -101,7 +106,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             if (!anyLineTooLong)
                 return node;
 
-            SyntaxTrivia newLeadingTrivia = GetNewLeadingTrivia(nodeLines);
+            SyntaxTrivia newLeadingTrivia = GetNewTrivia(nodeLines);
 
             IEnumerable<SyntaxNodeOrToken> descendants = node.DescendantNodesAndTokensAndSelf(x => !(x is LambdaExpressionSyntax));
             IList<SyntaxToken> descendantDotTokens = descendants.Where(x => x.Kind() is SyntaxKind.DotToken).Select(x => x.AsToken()).ToList();
