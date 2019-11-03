@@ -104,12 +104,16 @@ LINE_BREAK_LENGTH_END
 
         private static void InitializeLengthOfLine()
         {
+            LengthOfLineToBreakOn = DefaultLineBreakLength;
             IList<string> lineLengthRaw = GetConfigItemsForSection(LineBreakLengthName);
             if (lineLengthRaw.Count != 1)
                 return;
 
             bool ableToParse = int.TryParse(lineLengthRaw[0], out int lengthOfLine);
-            LengthOfLineToBreakOn = ableToParse ? lengthOfLine : DefaultLineBreakLength;
+            if (ableToParse)
+            {
+                LengthOfLineToBreakOn = lengthOfLine;
+            }
         }
     }
 }

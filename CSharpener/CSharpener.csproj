@@ -46,6 +46,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\BreakLongCodeLinesCommand.cs" />
     <Compile Include="Commands\FormatAndSortCodeFileCommand.cs" />
     <Compile Include="Commands\FormatCodeFileCommand.cs" />
     <Compile Include="ConfigPage\BaseOptionModel.cs" />

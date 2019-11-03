@@ -64,6 +64,13 @@
           <ButtonText>Format and Sort Code File</ButtonText>
         </Strings>
       </Button>
+    
+      <Button guid="guidCSharpenerPackageCmdSet" id="BreakLongCodeLinesCommandId" priority="0x0100" type="Button">
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Break Long Code Lines</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -93,6 +100,10 @@
     <CommandPlacement guid="guidCSharpenerPackageCmdSet" id="FormatAndSortCodeFileCommandId" priority="0x0002">
       <Parent guid="guidCSharpenerPackageCmdSet" id="CSharpenerCommandMenuGroup" />
     </CommandPlacement>
+  
+    <CommandPlacement guid="guidCSharpenerPackageCmdSet" id="BreakLongCodeLinesCommandId" priority="0x0003">
+      <Parent guid="guidCSharpenerPackageCmdSet" id="CSharpenerCommandMenuGroup" />
+    </CommandPlacement>
   </CommandPlacements>
 
   <Symbols>
@@ -106,6 +117,7 @@
       <IDSymbol name="CSharpenerCommandMenuGroup" value="0x1030" />
       <IDSymbol name="FormatCodeFileCommandId" value="0x0766" />
       <IDSymbol name="FormatAndSortCodeFileCommandId" value="0x0767" />
+      <IDSymbol name="BreakLongCodeLinesCommandId" value="0x0768" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{3b4d656b-580a-48a1-bfb1-9c7db4cf9fc3}">

@@ -56,6 +56,7 @@ namespace Gjeltema.CSharpener
             await InitializeConfigurationAsync();
             await FormatCodeFileCommand.InitializeAsync(this);
             await FormatAndSortCodeFileCommand.InitializeAsync(this);
+            await BreakLongCodeLinesCommand.InitializeAsync(this);
         }
 
         private async Task InitializeConfigurationAsync()
