@@ -1322,7 +1322,7 @@ private string _name;
 }
 ";
         public const string UsingsInAndOutsideNamespaceAfterFileHeader = @"// -------------------------------------------
-// Test Header for TestFile.cs Copyright 2019
+// Test Header for TestFile.cs Copyright 2020
 // -------------------------------------------
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -1586,7 +1586,7 @@ private string _name;
 }
 ";
         public const string UsingsOnlyOutsideNamespaceAfterFileHeader = @"// -------------------------------------------
-// Test Header for AnotherTestFile.cs Copyright 2019
+// Test Header for AnotherTestFile.cs Copyright 2020
 // -------------------------------------------
 
 using System.Runtime.InteropServices;
@@ -2378,7 +2378,7 @@ public override bool Equals(object obj)
 }
 ";
         public const string UsingsInAndOutsideNamespaceAfterCompositeRun = @"// -------------------------------------------
-// Test Header for TestFile.cs Copyright 2019
+// Test Header for TestFile.cs Copyright 2020
 // -------------------------------------------
 
 namespace TestDummy
@@ -2637,7 +2637,7 @@ public override bool Equals(object obj)
 }
 ";
         public const string UsingsOnlyOutsideNamespaceAfterCompositeRun = @"// -------------------------------------------
-// Test Header for AnotherTestFile.cs Copyright 2019
+// Test Header for AnotherTestFile.cs Copyright 2020
 // -------------------------------------------
 
 namespace TestDummy
