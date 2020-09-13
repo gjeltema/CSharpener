@@ -297,5 +297,199 @@ Count();
         public double MoreWork() => 3.1415926535897932384626433232389498328439480134730137876571804783014738753798367768147384138473775667174834018375763784380714387563718371834347;
     }
 }";
+
+        public const string MethodArgumentsBeforeSorting = @"namespace TestDummy
+{
+    using System;
+    using System.Runtime.CompilerServices;
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+    public class Program<T> : IComparable<string>, IEnumerable<string>, IList<string>, IEquatable<string>, ICollection<string> where T : string
+    {
+        private const string LongString = ""abcdefghad;jfkaoieanvi;aifidkfajdi;avidfj;if"";
+        private int numberOfSomething; // End of line comment
+
+        public void TestMethod(int first, IEnumerable<BitConverter> second) {}
+
+        public void TestMethod(int first, int[] second) {}
+
+        public void TestMethod(int first, Exception second) {}
+
+        public void TestMethod(int first, IEnumerable<int> second) {}
+
+        public void TestMethod(int first, out Exception second) {}
+
+        public void TestMethod(int first, ref int second) {}
+
+        public void TestMethod(int first, bool second) {}
+
+        public void TestMethod(int first, [CallerMemberName] string second = """") {}
+
+        public void TestMethod(int first, double second) {}
+
+        public void TestMethod(
+            int first, 
+            Exception firstAndAHalf, 
+            List< int > second, 
+            List<string> third, 
+            List<Exception> fourth, 
+            int[] fifth, 
+            Exception[] sixth, 
+            bool seventh,
+            bool? eighth,
+            double ninth,
+            Tuple<int, string> tenth,
+            string eleventh,
+            [CallerMemberName] string twelfth = """",
+            out string thirteenth,
+            ref float fourteenth,
+            Int32 fifteenth,
+            String sixteenth,
+            BitConverter seventeenth,
+            Func<int, bool> predicate,
+            params int[] last)
+        {
+            var testList = new List<string>();
+            var result = testList
+                .Where(x => x.Length > 5)
+                .Select(x => Enumerable.Range(0, x.Length).Sum())
+                .ToList()
+                .Where(x => x < 250)
+                .Select(x => new string('A', x))
+                .Count();
+        }
+
+        public void TestMethod(
+            int first, 
+            Exception firstAndAHalf, 
+            List< int > second, 
+            List<string> third, 
+            List<Exception> fourth, 
+            int[] fifth, 
+            Exception[] sixth, 
+            bool seventh,
+            bool? eighth,
+            double ninth,
+            Tuple<int, string> tenth,
+            string eleventh,
+            [CallerMemberName] string twelfth = """",
+            out string thirteenth,
+            ref float fourteenth,
+            Int32 fifteenth,
+            String sixteenth,
+            BitConverter seventeenth,
+            Func<int, bool> predicate,
+            List<string> different)
+        {
+            var testList = new List<string>();
+            var result = testList
+                .Where(x => x.Length > 5)
+                .Select(x => Enumerable.Range(0, x.Length).Sum())
+                .ToList()
+                .Where(x => x < 250)
+                .Select(x => new string('A', x))
+                .Count();
+        }";
+
+
+        public const string MethodArgumentsAfterSorting = @"namespace TestDummy
+{
+    using System;
+    using System.Runtime.CompilerServices;
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+    public class Program<T> : IComparable<string>, IEnumerable<string>, IList<string>, IEquatable<string>, ICollection<string> where T : string
+    {
+        private const string LongString = ""abcdefghad;jfkaoieanvi;aifidkfajdi;avidfj;if"";
+        private int numberOfSomething; // End of line comment
+
+        public void TestMethod(int first, [CallerMemberName] string second = """") {}
+
+        public void TestMethod(int first, bool second) {}
+
+        public void TestMethod(int first, double second) {}
+
+        public void TestMethod(int first, ref int second) {}
+
+        public void TestMethod(int first, Exception second) {}
+
+        public void TestMethod(int first, IEnumerable<int> second) {}
+
+        public void TestMethod(int first, IEnumerable<BitConverter> second) {}
+
+        public void TestMethod(int first, int[] second) {}
+
+        public void TestMethod(int first, out Exception second) {}
+
+        public void TestMethod(
+            int first, 
+            Exception firstAndAHalf, 
+            List< int > second, 
+            List<string> third, 
+            List<Exception> fourth, 
+            int[] fifth, 
+            Exception[] sixth, 
+            bool seventh,
+            bool? eighth,
+            double ninth,
+            Tuple<int, string> tenth,
+            string eleventh,
+            [CallerMemberName] string twelfth = """",
+            out string thirteenth,
+            ref float fourteenth,
+            Int32 fifteenth,
+            String sixteenth,
+            BitConverter seventeenth,
+            Func<int, bool> predicate,
+            List<string> different)
+        {
+            var testList = new List<string>();
+            var result = testList
+                .Where(x => x.Length > 5)
+                .Select(x => Enumerable.Range(0, x.Length).Sum())
+                .ToList()
+                .Where(x => x < 250)
+                .Select(x => new string('A', x))
+                .Count();
+        }
+
+        public void TestMethod(
+            int first, 
+            Exception firstAndAHalf, 
+            List< int > second, 
+            List<string> third, 
+            List<Exception> fourth, 
+            int[] fifth, 
+            Exception[] sixth, 
+            bool seventh,
+            bool? eighth,
+            double ninth,
+            Tuple<int, string> tenth,
+            string eleventh,
+            [CallerMemberName] string twelfth = """",
+            out string thirteenth,
+            ref float fourteenth,
+            Int32 fifteenth,
+            String sixteenth,
+            BitConverter seventeenth,
+            Func<int, bool> predicate,
+            params int[] last)
+        {
+            var testList = new List<string>();
+            var result = testList
+                .Where(x => x.Length > 5)
+                .Select(x => Enumerable.Range(0, x.Length).Sum())
+                .ToList()
+                .Where(x => x < 250)
+                .Select(x => new string('A', x))
+                .Count();
+        }
+";
     }
 }

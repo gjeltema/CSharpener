@@ -2226,6 +2226,9 @@ private string _name;
             return left.Equals(right);
         }
 
+        [DllImport(@""C:\Native.dll"", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void Foo(IntPtr lplf);
+
         internal static void DoWork()
         {
         }
@@ -2278,10 +2281,7 @@ public override bool Equals(object obj)
         private protected bool Blah(bool returnValue)
         {
             return returnValue && true;
-        }
-        [DllImport(@""C:\Native.dll"", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void Foo(IntPtr lplf);
-		
+        }		
         internal class NestedClass
         {
 
@@ -2482,6 +2482,9 @@ private string _name;
             return left.Equals(right);
         }
 
+        [DllImport(@""C:\Native.dll"", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void Foo(IntPtr lplf);
+
         internal static void DoWork()
         {
         }
@@ -2539,9 +2542,6 @@ public override bool Equals(object obj)
         {
             return returnValue && true;
         }
-
-        [DllImport(@""C:\Native.dll"", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void Foo(IntPtr lplf);
 
         internal class NestedClass
         {
@@ -2739,6 +2739,9 @@ private string _name;
             return left.Equals(right);
         }
 
+        [DllImport(@""C:\Native.dll"", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void Foo(IntPtr lplf);
+
         internal static void DoWork()
         {
         }
@@ -2796,9 +2799,6 @@ public override bool Equals(object obj)
         {
             return returnValue && true;
         }
-
-        [DllImport(@""C:\Native.dll"", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void Foo(IntPtr lplf);
 
         internal class NestedClass
         {

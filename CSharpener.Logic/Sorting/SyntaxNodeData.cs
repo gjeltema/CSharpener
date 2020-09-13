@@ -5,6 +5,8 @@
 namespace Gjeltema.CSharpener.Logic.Sorting
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -35,6 +37,8 @@ namespace Gjeltema.CSharpener.Logic.Sorting
 
         public int NumberOfMethodArguments { get; private set; } = 0;
 
+        public IImmutableList<ParameterSyntax> MethodArguments { get; private set; } = ImmutableList<ParameterSyntax>.Empty;
+
         private ICollection<SyntaxKind> Modifiers { get; }
 
         private SyntaxTokenList GetSyntaxPropertiesForNode(CSharpSyntaxNode node)
@@ -43,7 +47,9 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             {
                 case MethodDeclarationSyntax mds:
                     Identifier = mds.Identifier.ValueText;
-                    NumberOfMethodArguments = mds.ParameterList.Parameters.Count;
+                    IList<ParameterSyntax> methodArgs = mds.ParameterList.Parameters.ToList();
+                    NumberOfMethodArguments = methodArgs.Count;
+                    MethodArguments = methodArgs.ToImmutableList();
                     return mds.Modifiers;
                 case PropertyDeclarationSyntax pds:
                     Identifier = pds.Identifier.ValueText;

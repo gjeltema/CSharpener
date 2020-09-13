@@ -56,7 +56,25 @@ namespace CSharpener.Logic.Tests.Sorting
 
             string actualOutput = formattedOutput.ToFullString();
             Debug.WriteLine(actualOutput);
-            //Assert.That(actualOutput, Is.EqualTo(expectedOutput));
+            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
+        }
+
+
+        [TestCase(TestData.MethodArgumentsBeforeSorting, TestData.MethodArgumentsAfterSorting)]
+        public void CodeTextWithArgSorting_WhenSorterIsRunWithWitespaceFormatter_OutputsSortedCodeText(string inputString, string expectedOutput)
+        {
+            TestHelper.InitializeConfig(TestData.TestConfig);
+            CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
+
+            var sh = new CSharpSorter();
+            SyntaxNode sortedOutput = sh.Visit(root);
+
+            var newlineFormatter = new NewlineFormatter();
+            SyntaxNode formattedOutput = newlineFormatter.Visit(sortedOutput);
+
+            string actualOutput = formattedOutput.ToFullString();
+            Debug.WriteLine(actualOutput);
+            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
         }
     }
 }

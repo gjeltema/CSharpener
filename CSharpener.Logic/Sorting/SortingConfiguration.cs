@@ -64,7 +64,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             modifiersConfigMappingBuilder.Add("static", Sorter.Static);
             modifiersConfigMappingBuilder.Add("accessibility", Sorter.Accessibility);
             modifiersConfigMappingBuilder.Add("name", Sorter.Name);
-            modifiersConfigMappingBuilder.Add("numberofmethodargs", Sorter.NumberOfMethodArguments);
+            modifiersConfigMappingBuilder.Add("numberofmethodargs", Sorter.MethodArguments);
             modifiersConfigurationMapping = modifiersConfigMappingBuilder.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
         }
 
