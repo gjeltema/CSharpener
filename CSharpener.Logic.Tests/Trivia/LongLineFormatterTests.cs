@@ -18,7 +18,7 @@ namespace CSharpener.Logic.Tests.Trivia
         public void CodeText_WhenHeaderFormatterRun_OutputsExpectedText(string inputString, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);
-            var root = TestHelper.CreateCSharpSyntaxRoot(inputString) as CSharpSyntaxNode;
+            CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
 
             var llf = new LongLineFormatter(CSharpenerConfigSettings.LengthOfLineToBreakOn);
             SyntaxNode llfRoot = llf.Visit(root);

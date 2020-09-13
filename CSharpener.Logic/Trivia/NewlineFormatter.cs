@@ -15,6 +15,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
     {
         private static readonly SyntaxTrivia doubleNewLine = SyntaxFactory.SyntaxTrivia(SyntaxKind.EndOfLineTrivia, Environment.NewLine + Environment.NewLine);
         private static readonly int newlineLength = Environment.NewLine.Length;
+        private static readonly SyntaxTrivia emptyTrivia = SyntaxFactory.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, "");
 
         public NewlineFormatter() : base(true)
         { }
@@ -33,7 +34,8 @@ namespace Gjeltema.CSharpener.Logic.Trivia
 
         public override SyntaxNode VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
         {
-            var formattedNode = FormatNewlines(node) as NamespaceDeclarationSyntax;
+            NamespaceDeclarationSyntax formattedNode = FormatLeadingWhitespace(node);
+            formattedNode = FormatNewlines(formattedNode) as NamespaceDeclarationSyntax;
             return base.VisitNamespaceDeclaration(formattedNode);
         }
 
@@ -66,6 +68,16 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             string trimmedTrivia = trivia.TrimStart();
             bool isDocumentationTrivia = trimmedTrivia.StartsWith(@"\\\");
             return isDocumentationTrivia ? SyntaxKind.SingleLineDocumentationCommentTrivia : SyntaxKind.SingleLineCommentTrivia;
+        }
+
+        private static NamespaceDeclarationSyntax FormatLeadingWhitespace(NamespaceDeclarationSyntax namespaceNode)
+        {
+            SyntaxTriviaList leadingTrivia = namespaceNode.GetLeadingTrivia();
+            string trimmedLeadingTrivia = leadingTrivia.ToString().TrimEnd();
+            SyntaxTrivia desiredNewlines = GetNewlinesForNamespaceLeadingTrivia(namespaceNode);
+            SyntaxTrivia newLeadingTrivia = SyntaxFactory.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, trimmedLeadingTrivia);
+            SyntaxTriviaList updatedLeadingTrivia = SyntaxFactory.TriviaList(newLeadingTrivia, desiredNewlines);
+            return namespaceNode.WithLeadingTrivia(updatedLeadingTrivia);
         }
 
         private static SyntaxNode FormatNewlines(SyntaxNode root)
@@ -107,6 +119,31 @@ namespace Gjeltema.CSharpener.Logic.Trivia
                 default:
                     return doubleNewLine;
             }
+        }
+
+        private static SyntaxTrivia GetNewlinesForNamespaceLeadingTrivia(SyntaxNode namespaceNode)
+        {
+            // Presumably this is the Document root node
+            SyntaxNode rootNode = namespaceNode.Parent;
+            if (rootNode == null)
+                return doubleNewLine;
+
+            SyntaxNode previousNode = null;
+            foreach (SyntaxNode node in rootNode.ChildNodes())
+            {
+                if (node is NamespaceDeclarationSyntax)
+                {
+                    if (previousNode is UsingDirectiveSyntax)
+                        return SyntaxFactory.CarriageReturnLineFeed;
+                    else if (previousNode is ClassDeclarationSyntax)
+                        return emptyTrivia;
+                    else
+                        return doubleNewLine;
+                }
+                previousNode = node;
+            }
+
+            return doubleNewLine;
         }
 
         private static bool IsNodePartOfEnclosingDeclaration(SyntaxNode node)

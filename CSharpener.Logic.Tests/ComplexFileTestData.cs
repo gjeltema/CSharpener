@@ -1861,6 +1861,7 @@ using Microsoft.CodeAnalysis.CSharp;
 // -------------------------------------------
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+
 namespace TestDummy
 {
     using System.Collections.Generic;
@@ -2047,7 +2048,7 @@ private string _name;
 		public abstract void OverriddenFunction(bool isTrueOrFalse);
 	}
 
-		namespace MoreBusyWork
+namespace MoreBusyWork
 	{
 	using System;
 
@@ -2568,7 +2569,7 @@ public override bool Equals(object obj)
 		public abstract void OverriddenFunction(bool isTrueOrFalse);
 	}
 
-		namespace MoreBusyWork
+namespace MoreBusyWork
 	{
 	using System;
 
@@ -2825,7 +2826,7 @@ public override bool Equals(object obj)
 		public abstract void OverriddenFunction(bool isTrueOrFalse);
 	}
 
-		namespace MoreBusyWork
+namespace MoreBusyWork
 	{
 	using System;
 

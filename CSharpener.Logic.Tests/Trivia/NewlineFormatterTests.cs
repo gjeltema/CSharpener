@@ -30,5 +30,20 @@ namespace CSharpener.Logic.Tests.Trivia
             Debug.WriteLine(actualOutput);
             Assert.That(actualOutput, Is.EqualTo(expectedOutput));
         }
+
+        [TestCase(TestData.WhitespaceLeadingNamespace, TestData.FormattedWhitespaceLeadingNamespace)]
+        [TestCase(TestData.WhitespaceLeadingNamespaceWithOuterUsings, TestData.FormattedWhitespaceLeadingNamespaceWithOuterUsings)]
+        public void CodeText_WhenNewlineFormattingRun_OutputsExpectedText(string inputString, string expectedOutput)
+        {
+            TestHelper.InitializeConfig(TestData.TestConfig);
+            CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
+
+            var newLineFormatter = new NewlineFormatter();
+            SyntaxNode newNode = newLineFormatter.Visit(root);
+
+            string actualOutput = newNode.ToFullString();
+            Debug.WriteLine(actualOutput);
+            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
+        }
     }
 }

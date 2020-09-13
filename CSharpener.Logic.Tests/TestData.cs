@@ -79,7 +79,9 @@ LINE_BREAK_LENGTH_END
 
     }
 }";
-        public const string ClassWithAttributesAfterNewline = @"namespace TestDummy
+        public const string ClassWithAttributesAfterNewline = @"
+
+namespace TestDummy
 {
     using System;
 
@@ -159,7 +161,9 @@ LINE_BREAK_LENGTH_END
         string ZZShouldBeAtTheEnd(string moreInput);
     }
 }";
-        public const string InterfaceAfterSortingAndFormattingNewlines = @"namespace TestDummy
+        public const string InterfaceAfterSortingAndFormattingNewlines = @"
+
+namespace TestDummy
 {
     using System;
 
@@ -204,7 +208,7 @@ LINE_BREAK_LENGTH_END
         private const string LongString = ""abcdefghad;jfkaoieanvi;aifidkfajdi;avidfj;ifjdinvaivdjaidfjadfdjfadksfajkldsfjafd;ijaidfjads;ifadi;ndijvadivjdijfd;iafjdiidvadi"";
         private int numberOfSomething; // End of line comment
 
-        public Program()
+        public Program(string one, string two, string three, string four, string five, string six)
         {
             var testList = new List<string>();
             var result = testList.Where(x => x.Length > 5).Select(x => Enumerable.Range(0, x.Length).Sum()).ToList().Where(x => x < 250).Select(x => new string('A', x)).
@@ -218,6 +222,8 @@ Count();
                 ""Test1"",
                 ""Test2""
             };
+
+            var newProgram = new Program(""This is a new string for initialization."", ""This is another string for initialization."", ""This is a third string, how nice!"", ""Fourth string for init."", ""Fifth string, because it's cool"", ""Sixth string to round things out."");
 
             int temp = 0;
 
@@ -249,7 +255,7 @@ Count();
             ""abcdefghad;jfkaoieanvi;aifidkfajdi;avidfj;ifjdinvaivdjaidfjadfdjfadksfajkldsfjafd;ijaidfjads;ifadi;ndijvadivjdijfd;iafjdiidvadi"";
         private int numberOfSomething; // End of line comment
 
-        public Program()
+        public Program(string one, string two, string three, string four, string five, string six)
         {
             var testList = new List<string>();
             var result = testList
@@ -268,6 +274,14 @@ Count();
                 ""Test1"",
                 ""Test2""
             };
+
+            var newProgram = new Program(
+                ""This is a new string for initialization."", 
+                ""This is another string for initialization."", 
+                ""This is a third string, how nice!"", 
+                ""Fourth string for init."", 
+                ""Fifth string, because it's cool"", 
+                ""Sixth string to round things out."");
 
             int temp = 0;
 
@@ -395,7 +409,9 @@ Count();
         }";
 
 
-        public const string MethodArgumentsAfterSorting = @"namespace TestDummy
+        public const string MethodArgumentsAfterSorting = @"
+
+namespace TestDummy
 {
     using System;
     using System.Runtime.CompilerServices;
@@ -491,5 +507,127 @@ Count();
                 .Count();
         }
 ";
+
+        public const string WhitespaceLeadingNamespaceWithOuterUsings = @"// -------------------------------------------
+// Test Header for TestFile.cs Copyright 2020
+// -------------------------------------------
+
+using System;
+using Microsoft.CodeAnalysis.CSharp;
+
+
+
+
+
+namespace TestDummy
+{
+
+
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+    class Program
+    {
+
+
+
+
+        private int numberOfSomething; // End of line comment
+
+
+        public Program()
+        {
+        }
+
+
+
+    }
+
+
+}";
+
+        public const string FormattedWhitespaceLeadingNamespaceWithOuterUsings = @"// -------------------------------------------
+// Test Header for TestFile.cs Copyright 2020
+// -------------------------------------------
+
+using System;
+using Microsoft.CodeAnalysis.CSharp;
+
+namespace TestDummy
+{
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+    class Program
+    {
+        private int numberOfSomething; // End of line comment
+
+        public Program()
+        {
+        }
+    }
+}";
+
+        public const string WhitespaceLeadingNamespace = @"// -------------------------------------------
+// Test Header for TestFile.cs Copyright 2020
+// -------------------------------------------
+
+
+
+
+
+
+
+namespace TestDummy
+{
+
+
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+    class Program
+    {
+
+
+
+
+        private int numberOfSomething; // End of line comment
+
+
+        public Program()
+        {
+        }
+
+
+
+    }
+
+
+}";
+
+        public const string FormattedWhitespaceLeadingNamespace = @"// -------------------------------------------
+// Test Header for TestFile.cs Copyright 2020
+// -------------------------------------------
+
+namespace TestDummy
+{
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+    class Program
+    {
+        private int numberOfSomething; // End of line comment
+
+        public Program()
+        {
+        }
+    }
+}";
     }
 }

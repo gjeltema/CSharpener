@@ -59,7 +59,6 @@ namespace CSharpener.Logic.Tests.Sorting
             Assert.That(actualOutput, Is.EqualTo(expectedOutput));
         }
 
-
         [TestCase(TestData.MethodArgumentsBeforeSorting, TestData.MethodArgumentsAfterSorting)]
         public void CodeTextWithArgSorting_WhenSorterIsRunWithWitespaceFormatter_OutputsSortedCodeText(string inputString, string expectedOutput)
         {
