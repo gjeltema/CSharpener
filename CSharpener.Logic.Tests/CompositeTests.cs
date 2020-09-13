@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// CompositeTests.cs Copyright 2019 Craig Gjeltema
+// CompositeTests.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests

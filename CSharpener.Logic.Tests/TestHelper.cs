@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// TestHelper.cs Copyright 2019 Craig Gjeltema
+// TestHelper.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests

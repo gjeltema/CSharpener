@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// VisualStudioHelper.cs Copyright 2019 Craig Gjeltema
+// VisualStudioHelper.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Utility

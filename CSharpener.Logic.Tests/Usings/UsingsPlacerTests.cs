@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// UsingsPlacerTests.cs Copyright 2019 Craig Gjeltema
+// UsingsPlacerTests.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Usings

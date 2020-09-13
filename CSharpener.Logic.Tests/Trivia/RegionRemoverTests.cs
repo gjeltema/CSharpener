@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// RegionRemoverTests.cs Copyright 2019 Craig Gjeltema
+// RegionRemoverTests.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Trivia

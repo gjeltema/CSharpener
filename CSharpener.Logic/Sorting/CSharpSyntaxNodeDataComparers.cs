@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// CSharpSyntaxNodeDataComparers.cs Copyright 2019 Craig Gjeltema
+// CSharpSyntaxNodeDataComparers.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
@@ -79,7 +79,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         public ConstSorter()
         { }
 
-        public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData) 
+        public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
             => CompareBool(leftData.IsConst, rightData.IsConst);
     }
 
@@ -88,7 +88,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         public ReadonlySorter()
         { }
 
-        public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData) 
+        public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
             => CompareBool(leftData.IsReadonly, rightData.IsReadonly);
     }
 
@@ -97,7 +97,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         public StaticSorter()
         { }
 
-        public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData) 
+        public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
             => CompareBool(leftData.IsStatic, rightData.IsStatic);
     }
 
@@ -138,7 +138,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             if (leftData.NumberOfMethodArguments > rightData.NumberOfMethodArguments)
                 return 1;
 
-            for(int argumentIndex = 0; argumentIndex < leftData.NumberOfMethodArguments; argumentIndex++)
+            for (int argumentIndex = 0; argumentIndex < leftData.NumberOfMethodArguments; argumentIndex++)
             {
                 ParameterSyntax leftArg = leftData.MethodArguments[argumentIndex];
                 ParameterSyntax rightArg = rightData.MethodArguments[argumentIndex];
@@ -188,17 +188,14 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         }
 
         /// <summary>
-        /// Compares whether the arguments based on whether they are "predefined".  Pushes predefined args upward in sorting.
-        /// Predefined meaning that it is a keyword of the C# language (<c>int</c>, <c>double</c>, <c>string</c>, etc.)
-        /// Note that the "class" names for these types are not considered "predefined" by the compiler,
-        /// so this will return -1 if the leftArg is an <c>int</c> and the rightArg is an <c>Int32</c>.
+        /// Pushes array args downward in sorting.
         /// </summary>
-        private int ComparePredefinedArgument(TypeSyntax leftArg, TypeSyntax rightArg)
+        private int CompareArrayArgument(TypeSyntax leftArg, TypeSyntax rightArg)
         {
-            bool leftIsPredefined = leftArg is PredefinedTypeSyntax;
-            bool rightIsPredefined = rightArg is PredefinedTypeSyntax;
+            bool leftIsArray = leftArg is ArrayTypeSyntax;
+            bool rightIsArray = rightArg is ArrayTypeSyntax;
 
-            return CompareBool(leftIsPredefined, rightIsPredefined);
+            return CompareReverseBool(leftIsArray, rightIsArray);
         }
 
         /// <summary>
@@ -210,28 +207,6 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             bool rightHasAttribute = rightArg.AttributeLists.Count > 0;
 
             return CompareBool(leftHasAttribute, rightHasAttribute);
-        }
-
-        /// <summary>
-        /// Pushes an arg with a modifier downward in sorting.
-        /// </summary>
-        private int CompareModifierOnArgument(ParameterSyntax leftArg, ParameterSyntax rightArg)
-        {
-            bool leftHasModifier = leftArg.Modifiers.Count > 0;
-            bool rightHasModifier = rightArg.Modifiers.Count > 0;
-
-            return CompareReverseBool(leftHasModifier, rightHasModifier);
-        }
-
-        /// <summary>
-        /// Pushes array args downward in sorting.
-        /// </summary>
-        private int CompareArrayArgument(TypeSyntax leftArg, TypeSyntax rightArg)
-        {
-            bool leftIsArray = leftArg is ArrayTypeSyntax;
-            bool rightIsArray = rightArg is ArrayTypeSyntax;
-
-            return CompareReverseBool(leftIsArray, rightIsArray);
         }
 
         /// <summary>
@@ -278,6 +253,31 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             }
 
             return 0;
+        }
+
+        /// <summary>
+        /// Pushes an arg with a modifier downward in sorting.
+        /// </summary>
+        private int CompareModifierOnArgument(ParameterSyntax leftArg, ParameterSyntax rightArg)
+        {
+            bool leftHasModifier = leftArg.Modifiers.Count > 0;
+            bool rightHasModifier = rightArg.Modifiers.Count > 0;
+
+            return CompareReverseBool(leftHasModifier, rightHasModifier);
+        }
+
+        /// <summary>
+        /// Compares whether the arguments based on whether they are "predefined".  Pushes predefined args upward in sorting.
+        /// Predefined meaning that it is a keyword of the C# language (<c>int</c>, <c>double</c>, <c>string</c>, etc.)
+        /// Note that the "class" names for these types are not considered "predefined" by the compiler,
+        /// so this will return -1 if the leftArg is an <c>int</c> and the rightArg is an <c>Int32</c>.
+        /// </summary>
+        private int ComparePredefinedArgument(TypeSyntax leftArg, TypeSyntax rightArg)
+        {
+            bool leftIsPredefined = leftArg is PredefinedTypeSyntax;
+            bool rightIsPredefined = rightArg is PredefinedTypeSyntax;
+
+            return CompareBool(leftIsPredefined, rightIsPredefined);
         }
     }
 }

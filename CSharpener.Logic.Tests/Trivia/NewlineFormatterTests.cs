@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// NewlineFormatterTests.cs Copyright 2019 Craig Gjeltema
+// NewlineFormatterTests.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Trivia
@@ -13,6 +13,21 @@ namespace CSharpener.Logic.Tests.Trivia
     [TestFixture]
     public class NewlineFormatterTests
     {
+        [TestCase(TestData.WhitespaceLeadingNamespace, TestData.FormattedWhitespaceLeadingNamespace)]
+        [TestCase(TestData.WhitespaceLeadingNamespaceWithOuterUsings, TestData.FormattedWhitespaceLeadingNamespaceWithOuterUsings)]
+        public void CodeText_WhenNewlineFormattingRun_OutputsExpectedText(string inputString, string expectedOutput)
+        {
+            TestHelper.InitializeConfig(TestData.TestConfig);
+            CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
+
+            var newLineFormatter = new NewlineFormatter();
+            SyntaxNode newNode = newLineFormatter.Visit(root);
+
+            string actualOutput = newNode.ToFullString();
+            Debug.WriteLine(actualOutput);
+            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
+        }
+
         [TestCase(ComplexFileTestData.UsingsInAndOutsideNamespace, ComplexFileTestData.UsingsInAndOutsideNamespaceAfterNewlineFormatting)]
         [TestCase(TestData.ClassWithAttributes, TestData.ClassWithAttributesAfterNewline)]
         public void CodeText_WhenRegionAndNewlineFormattingsRun_OutputsExpectedText(string inputString, string expectedOutput)
@@ -27,21 +42,6 @@ namespace CSharpener.Logic.Tests.Trivia
             SyntaxNode newLineRoot = newLineFormatter.Visit(removedRegionsNode);
 
             string actualOutput = newLineRoot.ToFullString();
-            Debug.WriteLine(actualOutput);
-            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
-        }
-
-        [TestCase(TestData.WhitespaceLeadingNamespace, TestData.FormattedWhitespaceLeadingNamespace)]
-        [TestCase(TestData.WhitespaceLeadingNamespaceWithOuterUsings, TestData.FormattedWhitespaceLeadingNamespaceWithOuterUsings)]
-        public void CodeText_WhenNewlineFormattingRun_OutputsExpectedText(string inputString, string expectedOutput)
-        {
-            TestHelper.InitializeConfig(TestData.TestConfig);
-            CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
-
-            var newLineFormatter = new NewlineFormatter();
-            SyntaxNode newNode = newLineFormatter.Visit(root);
-
-            string actualOutput = newNode.ToFullString();
             Debug.WriteLine(actualOutput);
             Assert.That(actualOutput, Is.EqualTo(expectedOutput));
         }

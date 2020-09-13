@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// NewlineFormatter.cs Copyright 2019 Craig Gjeltema
+// NewlineFormatter.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Trivia
@@ -14,8 +14,8 @@ namespace Gjeltema.CSharpener.Logic.Trivia
     public sealed class NewlineFormatter : CSharpSyntaxRewriter
     {
         private static readonly SyntaxTrivia doubleNewLine = SyntaxFactory.SyntaxTrivia(SyntaxKind.EndOfLineTrivia, Environment.NewLine + Environment.NewLine);
-        private static readonly int newlineLength = Environment.NewLine.Length;
         private static readonly SyntaxTrivia emptyTrivia = SyntaxFactory.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, "");
+        private static readonly int newlineLength = Environment.NewLine.Length;
 
         public NewlineFormatter() : base(true)
         { }

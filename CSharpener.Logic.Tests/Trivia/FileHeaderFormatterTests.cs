@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// FileHeaderFormatterTests.cs Copyright 2019 Craig Gjeltema
+// FileHeaderFormatterTests.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Trivia

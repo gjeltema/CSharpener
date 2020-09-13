@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// BreakLongCodeLinesCommand.cs Copyright 2019 Craig Gjeltema
+// BreakLongCodeLinesCommand.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Commands

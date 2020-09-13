@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// FormatCodeFileCommand.cs Copyright 2019 Craig Gjeltema
+// FormatCodeFileCommand.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Commands

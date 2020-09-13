@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// CSharpSorterTests.cs Copyright 2019 Craig Gjeltema
+// CSharpSorterTests.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Sorting
@@ -28,6 +28,23 @@ namespace CSharpener.Logic.Tests.Sorting
             Assert.That(actualOutput, Is.EqualTo(expectedOutput));
         }
 
+        [TestCase(TestData.MethodArgumentsBeforeSorting, TestData.MethodArgumentsAfterSorting)]
+        public void CodeTextWithArgSorting_WhenSorterIsRunWithWitespaceFormatter_OutputsSortedCodeText(string inputString, string expectedOutput)
+        {
+            TestHelper.InitializeConfig(TestData.TestConfig);
+            CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
+
+            var sh = new CSharpSorter();
+            SyntaxNode sortedOutput = sh.Visit(root);
+
+            var newlineFormatter = new NewlineFormatter();
+            SyntaxNode formattedOutput = newlineFormatter.Visit(sortedOutput);
+
+            string actualOutput = formattedOutput.ToFullString();
+            Debug.WriteLine(actualOutput);
+            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
+        }
+
         [TestCase(TestData.InterfaceBeforeSorting, TestData.InterfaceAfterSorting)]
         public void CodeTextWithInterface_WhenSorterIsRun_OutputsSortedCodeText(string inputString, string expectedOutput)
         {
@@ -44,23 +61,6 @@ namespace CSharpener.Logic.Tests.Sorting
 
         [TestCase(TestData.InterfaceBeforeSorting, TestData.InterfaceAfterSortingAndFormattingNewlines)]
         public void CodeTextWithInterface_WhenSorterIsRunWithWhitespaceFormatter_OutputsSortedCodeText(string inputString, string expectedOutput)
-        {
-            TestHelper.InitializeConfig(TestData.TestConfig);
-            CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
-
-            var sh = new CSharpSorter();
-            SyntaxNode sortedOutput = sh.Visit(root);
-
-            var newlineFormatter = new NewlineFormatter();
-            SyntaxNode formattedOutput = newlineFormatter.Visit(sortedOutput);
-
-            string actualOutput = formattedOutput.ToFullString();
-            Debug.WriteLine(actualOutput);
-            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
-        }
-
-        [TestCase(TestData.MethodArgumentsBeforeSorting, TestData.MethodArgumentsAfterSorting)]
-        public void CodeTextWithArgSorting_WhenSorterIsRunWithWitespaceFormatter_OutputsSortedCodeText(string inputString, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);
             CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// SortingConfiguration.cs Copyright 2019 Craig Gjeltema
+// SortingConfiguration.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting

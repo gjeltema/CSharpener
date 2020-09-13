@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// LongLineFormatterTests.cs Copyright 2019 Craig Gjeltema
+// LongLineFormatterTests.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Trivia

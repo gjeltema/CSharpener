@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// SyntaxNodeData.cs Copyright 2019 Craig Gjeltema
+// SyntaxNodeData.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
@@ -35,9 +35,9 @@ namespace Gjeltema.CSharpener.Logic.Sorting
 
         public SyntaxKind Kind { get; }
 
-        public int NumberOfMethodArguments { get; private set; } = 0;
-
         public IImmutableList<ParameterSyntax> MethodArguments { get; private set; } = ImmutableList<ParameterSyntax>.Empty;
+
+        public int NumberOfMethodArguments { get; private set; } = 0;
 
         private ICollection<SyntaxKind> Modifiers { get; }
 

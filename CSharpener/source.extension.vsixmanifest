@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Gjeltema.CSharpener.d899e231-94b9-4b0c-9dd5-d250e476adc5" Version="1.1" Language="en-US" Publisher="Craig Gjeltema" />
+        <Identity Id="Gjeltema.CSharpener.d899e231-94b9-4b0c-9dd5-d250e476adc5" Version="1.2" Language="en-US" Publisher="Craig Gjeltema" />
         <DisplayName>CSharpener</DisplayName>
         <Description xml:space="preserve">Useful CSharp formatting functionality.</Description>
     </Metadata>

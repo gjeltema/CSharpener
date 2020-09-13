@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------
-// ModifiersHelper.cs Copyright 2019 Craig Gjeltema
+// ModifiersHelper.cs Copyright 2020 Craig Gjeltema
 // --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic
