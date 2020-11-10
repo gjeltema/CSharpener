@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// LongLineFormatterTests.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// LongLineFormatterTests.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Trivia
 {
@@ -8,7 +8,6 @@ namespace CSharpener.Logic.Tests.Trivia
     using Gjeltema.CSharpener.Logic;
     using Gjeltema.CSharpener.Logic.Trivia;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using NUnit.Framework;
 
     [TestFixture]
@@ -18,7 +17,7 @@ namespace CSharpener.Logic.Tests.Trivia
         public void CodeText_WhenHeaderFormatterRun_OutputsExpectedText(string inputString, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);
-            var root = TestHelper.CreateCSharpSyntaxRoot(inputString) as CSharpSyntaxNode;
+            var root = TestHelper.CreateCSharpSyntaxRoot(inputString);
 
             var llf = new LongLineFormatter(CSharpenerConfigSettings.LengthOfLineToBreakOn);
             SyntaxNode llfRoot = llf.Visit(root);

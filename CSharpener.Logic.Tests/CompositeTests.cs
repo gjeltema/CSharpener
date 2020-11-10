@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// CompositeTests.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// CompositeTests.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests
 {
@@ -36,6 +36,27 @@ namespace CSharpener.Logic.Tests
 
             var newLineFormatter = new NewlineFormatter();
             SyntaxNode formattedRoot = newLineFormatter.Visit(sorterRoot);
+
+            string actualOutput = formattedRoot.ToFullString();
+            Debug.WriteLine(actualOutput);
+            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
+        }
+
+        [TestCase(TestData.UsingsOnlyOutsideNamespaceWithCorrectFileHeader, "AnotherTestFile.cs", TestData.UsingsOnlyOutsideNamespaceAfterNewline)]
+        [TestCase(TestData.UsingsInAndOutsideNamespaceWithCorrectFileHeader, "TestFile.cs", TestData.UsingsInAndOutsideNamespaceAfterNewline)]
+        public void CodeTextWithProperHeader_WhenUsingsAndNewlineFormattersRun_OutputsExpectedCodeText(string inputString, string fileName, string expectedOutput)
+        {
+            TestHelper.InitializeConfig(TestData.TestConfig);
+            CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
+
+            var usingsHelper = new UsingsPlacer();
+            SyntaxNode usingsRoot = usingsHelper.ProcessUsings(root);
+
+            var fhf = new FileHeaderFormatter();
+            SyntaxNode fhfRoot = fhf.AddHeader(usingsRoot, fileName);
+
+            var newLineFormatter = new NewlineFormatter();
+            SyntaxNode formattedRoot = newLineFormatter.Visit(fhfRoot);
 
             string actualOutput = formattedRoot.ToFullString();
             Debug.WriteLine(actualOutput);

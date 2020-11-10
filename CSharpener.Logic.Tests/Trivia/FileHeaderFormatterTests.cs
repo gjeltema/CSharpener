@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// FileHeaderFormatterTests.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// FileHeaderFormatterTests.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Trivia
 {
@@ -13,8 +13,8 @@ namespace CSharpener.Logic.Tests.Trivia
     [TestFixture]
     public class FileHeaderFormatterTests
     {
-        [TestCase(ComplexFileTestData.UsingsInAndOutsideNamespace, "TestFile.cs", ComplexFileTestData.UsingsInAndOutsideNamespaceAfterFileHeader)]
-        [TestCase(ComplexFileTestData.UsingsOnlyOutsideNamespace, "AnotherTestFile.cs", ComplexFileTestData.UsingsOnlyOutsideNamespaceAfterFileHeader)]
+        [TestCase(TestData.UsingsInAndOutsideNamespace, "TestFile.cs", TestData.UsingsInAndOutsideNamespaceAfterFileHeader)]
+        [TestCase(TestData.UsingsOnlyOutsideNamespace, "AnotherTestFile.cs", TestData.UsingsOnlyOutsideNamespaceAfterFileHeader)]
         public void CodeText_WhenHeaderFormatterRun_OutputsExpectedText(string inputString, string fileName, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);

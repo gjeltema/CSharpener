@@ -1,4 +1,7 @@
-﻿
+﻿// -----------------------------------------------------------------------
+// BaseOptionModel.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
+
 namespace Gjeltema.CSharpener.ConfigPage
 {
     using System;
@@ -60,17 +63,10 @@ namespace Gjeltema.CSharpener.ConfigPage
         /// </summary>
         public static Task<T> GetLiveInstanceAsync() => liveModel.GetValueAsync();
 
-        private static async Task<ShellSettingsManager> GetSettingsManagerAsync()
-        {
-            var svc = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsSettingsManager)) as IVsSettingsManager;
-            Assumes.Present(svc);
-            return new ShellSettingsManager(svc);
-        }
-
         /// <summary>
         /// Hydrates the properties from the registry.
         /// </summary>
-        public virtual void Load() 
+        public virtual void Load()
             => ThreadHelper.JoinableTaskFactory.Run(LoadAsync);
 
         /// <summary>
@@ -104,7 +100,7 @@ namespace Gjeltema.CSharpener.ConfigPage
         /// <summary>
         /// Saves the properties to the registry.
         /// </summary>
-        public virtual void Save() 
+        public virtual void Save()
             => ThreadHelper.JoinableTaskFactory.Run(SaveAsync);
 
         /// <summary>
@@ -162,7 +158,14 @@ namespace Gjeltema.CSharpener.ConfigPage
             }
         }
 
-        private IEnumerable<PropertyInfo> GetOptionProperties() 
+        private static async Task<ShellSettingsManager> GetSettingsManagerAsync()
+        {
+            var svc = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsSettingsManager)) as IVsSettingsManager;
+            Assumes.Present(svc);
+            return new ShellSettingsManager(svc);
+        }
+
+        private IEnumerable<PropertyInfo> GetOptionProperties()
             => GetType()
                 .GetProperties()
                 .Where(p => p.PropertyType.IsSerializable && p.PropertyType.IsPublic);

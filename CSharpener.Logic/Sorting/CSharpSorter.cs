@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// CSharpSorter.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// CSharpSorter.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
 {
@@ -19,7 +19,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         Static,
         Accessibility,
         Name,
-        NumberOfMethodArguments
+        MethodArguments
     }
 
     public sealed class CSharpSorter : CSharpSyntaxRewriter
@@ -77,7 +77,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
                 { Sorter.Static, x => new StaticSorter() },
                 { Sorter.Accessibility, x => new AccessibilitySorter(x) },
                 { Sorter.Name, x => new NameSorter() },
-                { Sorter.NumberOfMethodArguments, x => new NumberOfMethodArgumentsSorter() }
+                { Sorter.MethodArguments, x => new MethodArgumentsSorter() }
             };
             private readonly IDictionary<MemberDeclarationSyntax, CSharpSyntaxNodeData> nodeData;
             private readonly IList<SyntaxNodeSorter> sorters = new List<SyntaxNodeSorter>();

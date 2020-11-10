@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// FormatAndSortCodeFileCommand.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// FormatAndSortCodeFileCommand.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Commands
 {

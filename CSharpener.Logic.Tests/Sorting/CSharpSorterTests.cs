@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// CSharpSorterTests.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// CSharpSorterTests.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Sorting
 {
@@ -14,20 +14,6 @@ namespace CSharpener.Logic.Tests.Sorting
     [TestFixture]
     public class CSharpSorterTests
     {
-        [TestCase(ComplexFileTestData.UsingsInAndOutsideNamespace, ComplexFileTestData.UsingsInAndOutsideNamespaceAfterSorting)]
-        public void CodeText_WhenSorterIsRun_OutputsSortedCodeText(string inputString, string expectedOutput)
-        {
-            TestHelper.InitializeConfig(TestData.TestConfig);
-            CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
-
-            var sh = new CSharpSorter();
-            SyntaxNode output = sh.Visit(root);
-
-            string actualOutput = output.ToFullString();
-            Debug.WriteLine(actualOutput);
-            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
-        }
-
         [TestCase(TestData.InterfaceBeforeSorting, TestData.InterfaceAfterSorting)]
         public void CodeTextWithInterface_WhenSorterIsRun_OutputsSortedCodeText(string inputString, string expectedOutput)
         {
@@ -56,7 +42,7 @@ namespace CSharpener.Logic.Tests.Sorting
 
             string actualOutput = formattedOutput.ToFullString();
             Debug.WriteLine(actualOutput);
-            //Assert.That(actualOutput, Is.EqualTo(expectedOutput));
+            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
         }
     }
 }

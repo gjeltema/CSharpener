@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// UsingsPlacerTests.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// UsingsPlacerTests.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Usings
 {
@@ -12,8 +12,8 @@ namespace CSharpener.Logic.Tests.Usings
 
     public class UsingsPlacerTests
     {
-        [TestCase(ComplexFileTestData.UsingsInAndOutsideNamespace, ComplexFileTestData.UsingsInAndOutsideAfterUsingsPlacement)]
-        [TestCase(ComplexFileTestData.UsingsOnlyOutsideNamespace, ComplexFileTestData.UsingsOnlyOutsideAfterUsingsPlacement)]
+        [TestCase(TestData.UsingsInAndOutsideNamespace, TestData.UsingInAndOutAfterUsingsPlacer)]
+        [TestCase(TestData.UsingsOnlyOutsideNamespace, TestData.UsingsOnlyOutAfterUsingsPlacer)]
         public void CodeText_WhenUsingsFormatterIsRun_OutputsCodeTextWithUsingsPlacedInNamespace(string inputString, string expectedOutput)
         {
             CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);

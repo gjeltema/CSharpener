@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// NewlineFormatterTests.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// NewlineFormatterTests.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Trivia
 {
@@ -13,7 +13,6 @@ namespace CSharpener.Logic.Tests.Trivia
     [TestFixture]
     public class NewlineFormatterTests
     {
-        [TestCase(ComplexFileTestData.UsingsInAndOutsideNamespace, ComplexFileTestData.UsingsInAndOutsideNamespaceAfterNewlineFormatting)]
         [TestCase(TestData.ClassWithAttributes, TestData.ClassWithAttributesAfterNewline)]
         public void CodeText_WhenRegionAndNewlineFormattingsRun_OutputsExpectedText(string inputString, string expectedOutput)
         {

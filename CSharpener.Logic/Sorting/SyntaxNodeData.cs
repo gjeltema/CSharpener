@@ -1,10 +1,11 @@
-﻿// --------------------------------------------------------------------
-// SyntaxNodeData.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// SyntaxNodeData.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -33,6 +34,8 @@ namespace Gjeltema.CSharpener.Logic.Sorting
 
         public SyntaxKind Kind { get; }
 
+        public IImmutableList<ParameterSyntax> MethodArguments { get; private set; } = (IImmutableList<ParameterSyntax>)ImmutableList<ParameterSyntax>.Empty;
+
         public int NumberOfMethodArguments { get; private set; } = 0;
 
         private ICollection<SyntaxKind> Modifiers { get; }
@@ -43,6 +46,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             {
                 case MethodDeclarationSyntax mds:
                     Identifier = mds.Identifier.ValueText;
+                    MethodArguments = mds.ParameterList.Parameters.ToImmutableList();
                     NumberOfMethodArguments = mds.ParameterList.Parameters.Count;
                     return mds.Modifiers;
                 case PropertyDeclarationSyntax pds:

@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// RegionRemoverTests.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// RegionRemoverTests.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Trivia
 {
@@ -13,7 +13,7 @@ namespace CSharpener.Logic.Tests.Trivia
     [TestFixture]
     public class RegionRemoverTests
     {
-        [TestCase(ComplexFileTestData.UsingsInAndOutsideNamespace, ComplexFileTestData.UsingsInAndOutsideNamespaceAfterRegionRemover)]
+        [TestCase(TestData.ClassWithRegions, TestData.ClassWithRegionsRemoved)]
         public void CodeText_WhenRegionFormatterIsRun_OutputsTextWithoutRegions(string inputString, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);

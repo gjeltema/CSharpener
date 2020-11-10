@@ -1,0 +1,51 @@
+V 1.0
+
+ACCESSMODIFIER_SORT_ORDER
+public
+internal
+protected
+protectedinternal
+private
+privateprotected
+ACCESSMODIFIER_SORT_ORDER_END
+
+HEADER
+// -----------------------------------------------------------------------
+// <copyright file="{filename}" company="My Company">
+//   Copyright {year} My Company LLC. All Rights Reserved.
+// </copyright>
+// -----------------------------------------------------------------------
+HEADER_END
+
+KIND_SORT_ORDER
+enum
+delegate
+eventField
+field
+event
+constructor
+destructor
+indexer
+property
+operator
+implicitexplicit
+method
+struct
+class
+interface
+KIND_SORT_ORDER_END
+
+MODIFIER_SORT_ORDER
+kind
+extern
+const
+readonly
+accessibility
+static
+name
+numberofmethodargs
+MODIFIER_SORT_ORDER_END
+
+LINE_BREAK_LENGTH
+200
+LINE_BREAK_LENGTH_END

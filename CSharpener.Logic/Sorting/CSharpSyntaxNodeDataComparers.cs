@@ -1,10 +1,12 @@
-﻿// --------------------------------------------------------------------
-// CSharpSyntaxNodeDataComparers.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// CSharpSyntaxNodeDataComparers.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
 {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     public abstract class SyntaxNodeSorter : IComparer<CSharpSyntaxNodeData>
     {
@@ -13,6 +15,20 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         }
 
         public abstract int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData);
+
+        protected int CompareBool(bool left, bool right)
+        {
+            if (left && !right)
+                return -1;
+            return !left & right ? 1 : 0;
+        }
+
+        protected int CompareReverseBool(bool left, bool right)
+        {
+            if (left && !right)
+                return 1;
+            return !left & right ? -1 : 0;
+        }
     }
 
     public abstract class SyntaxNodeSorterWithSortConfig : SyntaxNodeSorter
@@ -35,7 +51,17 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             if (leftData.Kind == rightData.Kind)
                 return 0;
 
-            return SortConfig.KindSortOrder[leftData.Kind] < SortConfig.KindSortOrder[rightData.Kind] ? -1 : 1;
+            if (!SortConfig.KindSortOrder.TryGetValue(leftData.Kind, out int leftSortOrder))
+            {
+                return 1;
+            }
+
+            if (!SortConfig.KindSortOrder.TryGetValue(rightData.Kind, out int rightSortOrder))
+            {
+                return -1;
+            }
+
+            return leftSortOrder < rightSortOrder ? -1 : 1;
         }
     }
 
@@ -45,13 +71,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         { }
 
         public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
-        {
-            if (leftData.IsExtern && !rightData.IsExtern)
-                return 1;
-            else if (!leftData.IsExtern && rightData.IsExtern)
-                return -1;
-            return 0;
-        }
+            => CompareBool(leftData.IsExtern, rightData.IsExtern);
     }
 
     public sealed class ConstSorter : SyntaxNodeSorter
@@ -60,13 +80,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         { }
 
         public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
-        {
-            if (leftData.IsConst && !rightData.IsConst)
-                return -1;
-            else if (!leftData.IsConst && rightData.IsConst)
-                return 1;
-            return 0;
-        }
+            => CompareBool(leftData.IsConst, rightData.IsConst);
     }
 
     public sealed class ReadonlySorter : SyntaxNodeSorter
@@ -75,13 +89,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         { }
 
         public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
-        {
-            if (leftData.IsReadonly && !rightData.IsReadonly)
-                return -1;
-            else if (!leftData.IsReadonly && rightData.IsReadonly)
-                return 1;
-            return 0;
-        }
+            => CompareBool(leftData.IsReadonly, rightData.IsReadonly);
     }
 
     public sealed class StaticSorter : SyntaxNodeSorter
@@ -90,13 +98,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         { }
 
         public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
-        {
-            if (leftData.IsStatic && !rightData.IsStatic)
-                return -1;
-            else if (!leftData.IsStatic && rightData.IsStatic)
-                return 1;
-            return 0;
-        }
+            => CompareBool(leftData.IsStatic, rightData.IsStatic);
     }
 
     public sealed class AccessibilitySorter : SyntaxNodeSorterWithSortConfig
@@ -124,16 +126,103 @@ namespace Gjeltema.CSharpener.Logic.Sorting
         }
     }
 
-    public sealed class NumberOfMethodArgumentsSorter : SyntaxNodeSorter
+    public sealed class MethodArgumentsSorter : SyntaxNodeSorter
     {
-        public NumberOfMethodArgumentsSorter()
-        { }
-
         public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
         {
-            if (leftData.NumberOfMethodArguments == rightData.NumberOfMethodArguments)
-                return 0;
-            return leftData.NumberOfMethodArguments < rightData.NumberOfMethodArguments ? -1 : 1;
+            if (leftData.NumberOfMethodArguments < rightData.NumberOfMethodArguments)
+                return -1;
+            if (leftData.NumberOfMethodArguments > rightData.NumberOfMethodArguments)
+                return 1;
+
+            for (int index = 0; index < leftData.NumberOfMethodArguments; ++index)
+            {
+                ParameterSyntax leftMethodArgs = leftData.MethodArguments[index];
+                ParameterSyntax rightMethodArgs = rightData.MethodArguments[index];
+                TypeSyntax leftType = leftMethodArgs.Type;
+                TypeSyntax rightType = rightMethodArgs.Type;
+
+                int predefinedCompareResult = ComparePredefinedArgument(leftType, rightType);
+                if (predefinedCompareResult != 0)
+                    return predefinedCompareResult;
+
+                int attributeCompareResult = CompareAttributedArgument(leftMethodArgs, rightMethodArgs);
+                if (attributeCompareResult != 0)
+                    return attributeCompareResult;
+
+                int modifierCompareResult = CompareModifierOnArgument(leftMethodArgs, rightMethodArgs);
+                if (modifierCompareResult != 0)
+                    return modifierCompareResult;
+
+                int arrayCompareResult = CompareArrayArgument(leftType, rightType);
+                if (arrayCompareResult != 0)
+                    return arrayCompareResult;
+
+                int genericCompareResult = CompareGenericArgument(leftType, rightType);
+                if (genericCompareResult != 0)
+                    return genericCompareResult;
+            }
+            return CompareArgumentTypeNames(leftData, rightData);
         }
+
+        private int CompareArgumentTypeNames(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
+        {
+            for (int index = 0; index < leftData.NumberOfMethodArguments; ++index)
+            {
+                ParameterSyntax leftArgs = leftData.MethodArguments[index];
+                ParameterSyntax rightArgs = rightData.MethodArguments[index];
+                int compareResult = leftArgs.Type.ToString().CompareTo(rightArgs.Type.ToString());
+                if (compareResult != 0)
+                    return compareResult;
+            }
+            return 0;
+        }
+
+        private int CompareArrayArgument(TypeSyntax leftArg, TypeSyntax rightArg)
+            => CompareReverseBool(leftArg is ArrayTypeSyntax, rightArg is ArrayTypeSyntax);
+
+        private int CompareAttributedArgument(ParameterSyntax leftArg, ParameterSyntax rightArg)
+        {
+            bool left = leftArg.AttributeLists.Count > 0;
+            bool right = rightArg.AttributeLists.Count > 0;
+            return CompareBool(left, right);
+        }
+
+        private int CompareGenericArgument(TypeSyntax leftArg, TypeSyntax rightArg)
+        {
+            GenericNameSyntax leftNameSyntax = leftArg as GenericNameSyntax;
+            GenericNameSyntax rightNameSyntax = rightArg as GenericNameSyntax;
+            if (leftNameSyntax == null && rightNameSyntax == null)
+                return 0;
+            if (leftNameSyntax != null && rightNameSyntax == null)
+                return 1;
+            if (leftNameSyntax == null && rightNameSyntax != null)
+                return -1;
+
+            SeparatedSyntaxList<TypeSyntax> leftArguments = leftNameSyntax.TypeArgumentList.Arguments;
+            SeparatedSyntaxList<TypeSyntax> rightArguments = rightNameSyntax.TypeArgumentList.Arguments;
+            if (leftArguments.Count < rightArguments.Count)
+                return -1;
+            if (leftArguments.Count > rightArguments.Count)
+                return 1;
+
+            for (int index = 0; index < leftArguments.Count; ++index)
+            {
+                int predefinedCompareResult = ComparePredefinedArgument(leftArguments[index], rightArguments[index]);
+                if (predefinedCompareResult != 0)
+                    return predefinedCompareResult;
+            }
+            return 0;
+        }
+
+        private int CompareModifierOnArgument(ParameterSyntax leftArg, ParameterSyntax rightArg)
+        {
+            bool left = leftArg.Modifiers.Count > 0;
+            bool right = rightArg.Modifiers.Count > 0;
+            return CompareReverseBool(left, right);
+        }
+
+        private int ComparePredefinedArgument(TypeSyntax leftArg, TypeSyntax rightArg)
+            => CompareBool(leftArg is PredefinedTypeSyntax, rightArg is PredefinedTypeSyntax);
     }
 }

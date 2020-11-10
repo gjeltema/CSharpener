@@ -1,4 +1,7 @@
-﻿
+﻿// -----------------------------------------------------------------------
+// BaseOptionPage.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
+
 namespace Gjeltema.CSharpener.ConfigPage
 {
     using Microsoft.VisualStudio.Shell;

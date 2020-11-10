@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------
-// SortingConfiguration.cs Copyright 2019 Craig Gjeltema
-// --------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// SortingConfiguration.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
 {
@@ -41,6 +41,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             kindConfigMappingBuilder.Add("indexer", SyntaxKind.IndexerDeclaration);
             kindConfigMappingBuilder.Add("property", SyntaxKind.PropertyDeclaration);
             kindConfigMappingBuilder.Add("operator", SyntaxKind.OperatorDeclaration);
+            kindConfigMappingBuilder.Add("implicitexplicit", SyntaxKind.ConversionOperatorDeclaration);
             kindConfigMappingBuilder.Add("method", SyntaxKind.MethodDeclaration);
             kindConfigMappingBuilder.Add("struct", SyntaxKind.StructDeclaration);
             kindConfigMappingBuilder.Add("class", SyntaxKind.ClassDeclaration);
@@ -64,7 +65,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             modifiersConfigMappingBuilder.Add("static", Sorter.Static);
             modifiersConfigMappingBuilder.Add("accessibility", Sorter.Accessibility);
             modifiersConfigMappingBuilder.Add("name", Sorter.Name);
-            modifiersConfigMappingBuilder.Add("numberofmethodargs", Sorter.NumberOfMethodArguments);
+            modifiersConfigMappingBuilder.Add("numberofmethodargs", Sorter.MethodArguments);
             modifiersConfigurationMapping = modifiersConfigMappingBuilder.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
         }
 
