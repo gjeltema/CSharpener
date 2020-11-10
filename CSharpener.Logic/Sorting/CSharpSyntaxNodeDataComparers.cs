@@ -16,18 +16,28 @@ namespace Gjeltema.CSharpener.Logic.Sorting
 
         public abstract int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData);
 
+        /// <summary>
+        /// If left is true and right is false, returns -1. If left is false and right is true, returns 1.  Else returns 0.
+        /// </summary>
         protected int CompareBool(bool left, bool right)
         {
             if (left && !right)
                 return -1;
-            return !left & right ? 1 : 0;
+            if (!left && right)
+                return 1;
+            return 0;
         }
 
+        /// <summary>
+        /// If left is true and right is false, returns 1. If left is false and right is true, returns -1.  Else returns 0.
+        /// </summary>
         protected int CompareReverseBool(bool left, bool right)
         {
             if (left && !right)
                 return 1;
-            return !left & right ? -1 : 0;
+            if (!left && right)
+                return -1;
+            return 0;
         }
     }
 
@@ -128,6 +138,9 @@ namespace Gjeltema.CSharpener.Logic.Sorting
 
     public sealed class MethodArgumentsSorter : SyntaxNodeSorter
     {
+        public MethodArgumentsSorter()
+        { }
+
         public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
         {
             if (leftData.NumberOfMethodArguments < rightData.NumberOfMethodArguments)
@@ -135,22 +148,23 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             if (leftData.NumberOfMethodArguments > rightData.NumberOfMethodArguments)
                 return 1;
 
-            for (int index = 0; index < leftData.NumberOfMethodArguments; ++index)
+            for (int argumentIndex = 0; argumentIndex < leftData.NumberOfMethodArguments; argumentIndex++)
             {
-                ParameterSyntax leftMethodArgs = leftData.MethodArguments[index];
-                ParameterSyntax rightMethodArgs = rightData.MethodArguments[index];
-                TypeSyntax leftType = leftMethodArgs.Type;
-                TypeSyntax rightType = rightMethodArgs.Type;
+                ParameterSyntax leftArg = leftData.MethodArguments[argumentIndex];
+                ParameterSyntax rightArg = rightData.MethodArguments[argumentIndex];
+
+                TypeSyntax leftType = leftArg.Type;
+                TypeSyntax rightType = rightArg.Type;
 
                 int predefinedCompareResult = ComparePredefinedArgument(leftType, rightType);
                 if (predefinedCompareResult != 0)
                     return predefinedCompareResult;
 
-                int attributeCompareResult = CompareAttributedArgument(leftMethodArgs, rightMethodArgs);
+                int attributeCompareResult = CompareAttributedArgument(leftArg, rightArg);
                 if (attributeCompareResult != 0)
                     return attributeCompareResult;
 
-                int modifierCompareResult = CompareModifierOnArgument(leftMethodArgs, rightMethodArgs);
+                int modifierCompareResult = CompareModifierOnArgument(leftArg, rightArg);
                 if (modifierCompareResult != 0)
                     return modifierCompareResult;
 
@@ -162,67 +176,118 @@ namespace Gjeltema.CSharpener.Logic.Sorting
                 if (genericCompareResult != 0)
                     return genericCompareResult;
             }
-            return CompareArgumentTypeNames(leftData, rightData);
+
+            int argumentTypeNameCompareResult = CompareArgumentTypeNames(leftData, rightData);
+            return argumentTypeNameCompareResult;
         }
 
         private int CompareArgumentTypeNames(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
         {
-            for (int index = 0; index < leftData.NumberOfMethodArguments; ++index)
+            for (int argumentIndex = 0; argumentIndex < leftData.NumberOfMethodArguments; argumentIndex++)
             {
-                ParameterSyntax leftArgs = leftData.MethodArguments[index];
-                ParameterSyntax rightArgs = rightData.MethodArguments[index];
-                int compareResult = leftArgs.Type.ToString().CompareTo(rightArgs.Type.ToString());
-                if (compareResult != 0)
-                    return compareResult;
+                ParameterSyntax leftArg = leftData.MethodArguments[argumentIndex];
+                ParameterSyntax rightArg = rightData.MethodArguments[argumentIndex];
+
+                string leftTypeName = leftArg.Type.ToString();
+                string rightTypeName = rightArg.Type.ToString();
+                int comparison = leftTypeName.CompareTo(rightTypeName);
+                if (comparison != 0)
+                    return comparison;
             }
             return 0;
         }
 
+        /// <summary>
+        /// Pushes array args downward in sorting.
+        /// </summary>
         private int CompareArrayArgument(TypeSyntax leftArg, TypeSyntax rightArg)
-            => CompareReverseBool(leftArg is ArrayTypeSyntax, rightArg is ArrayTypeSyntax);
+        {
+            bool leftIsArray = leftArg is ArrayTypeSyntax;
+            bool rightIsArray = rightArg is ArrayTypeSyntax;
 
+            return CompareReverseBool(leftIsArray, rightIsArray);
+        }
+
+        /// <summary>
+        /// Pushes an attributed arg upward in sorting.
+        /// </summary>
         private int CompareAttributedArgument(ParameterSyntax leftArg, ParameterSyntax rightArg)
         {
-            bool left = leftArg.AttributeLists.Count > 0;
-            bool right = rightArg.AttributeLists.Count > 0;
-            return CompareBool(left, right);
+            bool leftHasAttribute = leftArg.AttributeLists.Count > 0;
+            bool rightHasAttribute = rightArg.AttributeLists.Count > 0;
+
+            return CompareBool(leftHasAttribute, rightHasAttribute);
         }
 
+        /// <summary>
+        /// Pushes non-generic args upward in sorting.  If both are generic, the one with less generic parameters
+        /// is pushed upward in sorting.  If both have the same number of generic parameters, cycles through the
+        /// generic parameters and pushes predefined parameters upward in sorting.
+        /// If both generic args have the same number of parameters and all parameters for both are either predefined
+        /// or not predefined, then returns 0;
+        /// </summary>
+        /// <param name="leftArg"></param>
+        /// <param name="rightArg"></param>
+        /// <returns></returns>
         private int CompareGenericArgument(TypeSyntax leftArg, TypeSyntax rightArg)
         {
-            GenericNameSyntax leftNameSyntax = leftArg as GenericNameSyntax;
-            GenericNameSyntax rightNameSyntax = rightArg as GenericNameSyntax;
-            if (leftNameSyntax == null && rightNameSyntax == null)
+            // Compare both not Generic, or Generic argument vs. non-Generic argument
+            var leftAsGeneric = leftArg as GenericNameSyntax;
+            var rightAsGeneric = rightArg as GenericNameSyntax;
+
+            if (leftAsGeneric == null && rightAsGeneric == null)
                 return 0;
-            if (leftNameSyntax != null && rightNameSyntax == null)
+            if (leftAsGeneric != null && rightAsGeneric == null)
                 return 1;
-            if (leftNameSyntax == null && rightNameSyntax != null)
+            if (leftAsGeneric == null && rightAsGeneric != null)
                 return -1;
 
-            SeparatedSyntaxList<TypeSyntax> leftArguments = leftNameSyntax.TypeArgumentList.Arguments;
-            SeparatedSyntaxList<TypeSyntax> rightArguments = rightNameSyntax.TypeArgumentList.Arguments;
-            if (leftArguments.Count < rightArguments.Count)
+            // Both are Generic. Compare number of Generic arguments
+            SeparatedSyntaxList<TypeSyntax> leftGenericArgs = leftAsGeneric.TypeArgumentList.Arguments;
+            SeparatedSyntaxList<TypeSyntax> rightGenericArgs = rightAsGeneric.TypeArgumentList.Arguments;
+
+            if (leftGenericArgs.Count < rightGenericArgs.Count)
                 return -1;
-            if (leftArguments.Count > rightArguments.Count)
+            if (leftGenericArgs.Count > rightGenericArgs.Count)
                 return 1;
 
-            for (int index = 0; index < leftArguments.Count; ++index)
+            // Same number of Generic arguments. Compare predefined vs. non-predefined Generic arguments
+            for (int genericArgIndex = 0; genericArgIndex < leftGenericArgs.Count; genericArgIndex++)
             {
-                int predefinedCompareResult = ComparePredefinedArgument(leftArguments[index], rightArguments[index]);
-                if (predefinedCompareResult != 0)
-                    return predefinedCompareResult;
+                TypeSyntax leftGenericArg = leftGenericArgs[genericArgIndex];
+                TypeSyntax rightGenericArg = rightGenericArgs[genericArgIndex];
+
+                int genericArgComparison = ComparePredefinedArgument(leftGenericArg, rightGenericArg);
+                if (genericArgComparison != 0)
+                    return genericArgComparison;
             }
+
             return 0;
         }
 
+        /// <summary>
+        /// Pushes an arg with a modifier downward in sorting.
+        /// </summary>
         private int CompareModifierOnArgument(ParameterSyntax leftArg, ParameterSyntax rightArg)
         {
-            bool left = leftArg.Modifiers.Count > 0;
-            bool right = rightArg.Modifiers.Count > 0;
-            return CompareReverseBool(left, right);
+            bool leftHasModifier = leftArg.Modifiers.Count > 0;
+            bool rightHasModifier = rightArg.Modifiers.Count > 0;
+
+            return CompareReverseBool(leftHasModifier, rightHasModifier);
         }
 
+        /// <summary>
+        /// Compares whether the arguments based on whether they are "predefined".  Pushes predefined args upward in sorting.
+        /// Predefined meaning that it is a keyword of the C# language (<c>int</c>, <c>double</c>, <c>string</c>, etc.)
+        /// Note that the "class" names for these types are not considered "predefined" by the compiler,
+        /// so this will return -1 if the leftArg is an <c>int</c> and the rightArg is an <c>Int32</c>.
+        /// </summary>
         private int ComparePredefinedArgument(TypeSyntax leftArg, TypeSyntax rightArg)
-            => CompareBool(leftArg is PredefinedTypeSyntax, rightArg is PredefinedTypeSyntax);
+        {
+            bool leftIsPredefined = leftArg is PredefinedTypeSyntax;
+            bool rightIsPredefined = rightArg is PredefinedTypeSyntax;
+
+            return CompareBool(leftIsPredefined, rightIsPredefined);
+        }
     }
 }

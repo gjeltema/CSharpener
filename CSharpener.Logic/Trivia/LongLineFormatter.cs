@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
+﻿// --------------------------------------------------------------------
 // LongLineFormatter.cs Copyright 2020 Craig Gjeltema
-// -----------------------------------------------------------------------
+// --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Trivia
 {
@@ -13,7 +13,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
 
     public sealed class LongLineFormatter : CSharpSyntaxRewriter
     {
-        private static readonly SyntaxTrivia EmptyTrivia = SyntaxFactory.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, "");
+        private static readonly SyntaxTrivia emptyTrivia = SyntaxFactory.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, "");
         private readonly string IndentSpacing = "    ";
         private readonly int MaxLengthOfLine;
         private readonly string[] NewlineSeparator = new[] { Environment.NewLine };
@@ -29,11 +29,14 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             if (!anyLineTooLong)
                 return base.VisitAssignmentExpression(node);
 
-            IList<SyntaxToken> descendentTokens = GetDescendentTokens(node, SyntaxKind.DotToken);
+            IList<SyntaxToken> dotTokens = GetDescendentTokens(node, SyntaxKind.DotToken);
             IList<SyntaxNode> argumentNodes = GetArgumentNodes(node);
-            AssignmentExpressionSyntax newNode = descendentTokens.Count <= (argumentNodes).Count
-                ? SplitLongLinesOnCommaToken(node, argumentNodes, newLeadingTrivia)
-                : SplitLongLinesOnDotToken(node, descendentTokens, newLeadingTrivia);
+            AssignmentExpressionSyntax newNode;
+            if (dotTokens.Count > argumentNodes.Count)
+                newNode = SplitLongLinesOnDotToken(node, dotTokens, newLeadingTrivia);
+            else
+                newNode = SplitLongLinesOnCommaToken(node, argumentNodes, newLeadingTrivia);
+
             return base.VisitAssignmentExpression(newNode);
         }
 
@@ -60,17 +63,20 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             (bool anyLineTooLong, SyntaxTrivia newLeadingTrivia) = IsAnyLineTooLong(node);
             if (!anyLineTooLong)
                 return base.VisitLocalDeclarationStatement(node);
-            IList<SyntaxToken> descendentTokens = GetDescendentTokens(node, SyntaxKind.DotToken);
+
+            IList<SyntaxToken> dotTokens = GetDescendentTokens(node, SyntaxKind.DotToken);
             IList<SyntaxNode> argumentNodes = GetArgumentNodes(node);
-            LocalDeclarationStatementSyntax newNode =
-                descendentTokens.Count <= argumentNodes.Count
-                ? SplitLongLinesOnCommaToken(node, argumentNodes, newLeadingTrivia)
-                : SplitLongLinesOnDotToken(node, descendentTokens, newLeadingTrivia);
+            LocalDeclarationStatementSyntax newNode;
+            if (dotTokens.Count > argumentNodes.Count)
+                newNode = SplitLongLinesOnDotToken(node, dotTokens, newLeadingTrivia);
+            else
+                newNode = SplitLongLinesOnCommaToken(node, argumentNodes, newLeadingTrivia);
+
             return base.VisitLocalDeclarationStatement(newNode);
         }
 
-        private SyntaxNode FormatArgumentWhitespace(SyntaxNode node, SyntaxTrivia newLeadingTrivia)
-            => node.WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed, newLeadingTrivia).WithTrailingTrivia();
+        private SyntaxNode FormatArgumentWhitespace(SyntaxNode argument, SyntaxTrivia newLeadingTrivia)
+            => argument.WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed, newLeadingTrivia).WithTrailingTrivia();
 
         private SyntaxToken FormatEqualsOrArrowTokenWhitespace(SyntaxToken token, SyntaxTrivia newLeadingTrivia)
             => token.WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed, newLeadingTrivia);
@@ -78,14 +84,20 @@ namespace Gjeltema.CSharpener.Logic.Trivia
         private SyntaxToken FormatTokenWhitespace(SyntaxToken token, SyntaxTrivia newLeadingTrivia)
             => token.WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed, newLeadingTrivia).WithTrailingTrivia();
 
-        private IList<SyntaxNode> GetArgumentNodes(SyntaxNode node)
-            => node.DescendantNodes(x => !(x is LambdaExpressionSyntax)).Where(x => x.Kind() == SyntaxKind.Argument).ToList();
+        IList<SyntaxNode> GetArgumentNodes(SyntaxNode node)
+        {
+            IEnumerable<SyntaxNode> descendants = node.DescendantNodes(x => !(x is LambdaExpressionSyntax));
+            return descendants.Where(x => x.Kind() == SyntaxKind.Argument).ToList();
+        }
 
         private IList<SyntaxToken> GetDescendentTokens(SyntaxNode node, SyntaxKind tokenKind)
-            => node.DescendantNodesAndTokensAndSelf(x => !(x is LambdaExpressionSyntax)).Where(x => x.Kind() == tokenKind).Select(x => x.AsToken()).ToList();
+        {
+            IEnumerable<SyntaxNodeOrToken> descendants = node.DescendantNodesAndTokensAndSelf(x => !(x is LambdaExpressionSyntax));
+            IList<SyntaxToken> descendantTokens = descendants.Where(x => x.Kind() == tokenKind).Select(x => x.AsToken()).ToList();
+            return descendantTokens;
+        }
 
-        private string GetFirstNonEmptyString(string[] nodeLines)
-            => nodeLines.First(x => x.Trim().Length > 0);
+        private string GetFirstNonEmptyString(string[] nodeLines) => nodeLines.First(x => x.Trim().Length > 0);
 
         private SyntaxTrivia GetNewTrivia(string nodeLine)
         {
@@ -117,20 +129,28 @@ namespace Gjeltema.CSharpener.Logic.Trivia
 
         private (bool anyLineTooLong, SyntaxTrivia newLeadingTrivia) IsAnyLineTooLong(SyntaxNode node)
         {
-            string[] nodeLines = node.ToFullString().Split(NewlineSeparator, StringSplitOptions.RemoveEmptyEntries);
-            return nodeLines.Any(x => x.Length > MaxLengthOfLine) ? (true, GetNewTrivia(nodeLines)) : (false, EmptyTrivia);
+            string nodeString = node.ToFullString();
+            string[] nodeLines = nodeString.Split(NewlineSeparator, StringSplitOptions.RemoveEmptyEntries);
+            bool anyLineTooLong = nodeLines.Any(x => x.Length > MaxLengthOfLine);
+            if (!anyLineTooLong)
+                return (false, emptyTrivia);
+
+            SyntaxTrivia newLeadingTrivia = GetNewTrivia(nodeLines);
+            return (true, newLeadingTrivia);
         }
 
         private TSyntaxNode SplitLongLinesOnCommaToken<TSyntaxNode>(TSyntaxNode node, IList<SyntaxNode> argumentNodes, SyntaxTrivia newLeadingTrivia) where TSyntaxNode : SyntaxNode
         {
             IDictionary<SyntaxNode, SyntaxNode> newCommaNodes = argumentNodes.ToDictionary(x => x, x => FormatArgumentWhitespace(x, newLeadingTrivia));
-            return SyntaxNodeExtensions.ReplaceNodes(node, argumentNodes, (x, y) => newCommaNodes[x]);
+            TSyntaxNode newNode = node.ReplaceNodes(argumentNodes, (x, y) => newCommaNodes[x]);
+            return newNode;
         }
 
         private TSyntaxNode SplitLongLinesOnDotToken<TSyntaxNode>(TSyntaxNode node, IList<SyntaxToken> dotTokens, SyntaxTrivia newLeadingTrivia) where TSyntaxNode : SyntaxNode
         {
             IDictionary<SyntaxToken, SyntaxToken> newTokens = dotTokens.ToDictionary(x => x, x => FormatTokenWhitespace(x, newLeadingTrivia));
-            return SyntaxNodeExtensions.ReplaceTokens(node, dotTokens, (x, y) => newTokens[x]);
+            TSyntaxNode newNode = node.ReplaceTokens(dotTokens, (x, y) => newTokens[x]);
+            return newNode;
         }
     }
 }

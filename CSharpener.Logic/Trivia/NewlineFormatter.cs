@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
+﻿// --------------------------------------------------------------------
 // NewlineFormatter.cs Copyright 2020 Craig Gjeltema
-// -----------------------------------------------------------------------
+// --------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Trivia
 {
@@ -34,8 +34,8 @@ namespace Gjeltema.CSharpener.Logic.Trivia
 
         public override SyntaxNode VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
         {
-            NamespaceDeclarationSyntax whitespaceFormattedNode = FormatLeadingWhitespace(node);
-            var formattedNode = FormatNewlines(whitespaceFormattedNode) as NamespaceDeclarationSyntax;
+            NamespaceDeclarationSyntax formattedNode = FormatLeadingWhitespace(node);
+            formattedNode = FormatNewlines(formattedNode) as NamespaceDeclarationSyntax;
             return base.VisitNamespaceDeclaration(formattedNode);
         }
 
@@ -72,10 +72,12 @@ namespace Gjeltema.CSharpener.Logic.Trivia
 
         private static NamespaceDeclarationSyntax FormatLeadingWhitespace(NamespaceDeclarationSyntax namespaceNode)
         {
-            string str = namespaceNode.GetLeadingTrivia().ToString().TrimEnd();
-            SyntaxTrivia namespaceLeadingTrivia = NewlineFormatter.GetNewlinesForNamespaceLeadingTrivia(namespaceNode);
-            SyntaxTriviaList syntaxTriviaList = SyntaxFactory.TriviaList(SyntaxFactory.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, str), namespaceLeadingTrivia);
-            return SyntaxNodeExtensions.WithLeadingTrivia(namespaceNode, syntaxTriviaList);
+            SyntaxTriviaList leadingTrivia = namespaceNode.GetLeadingTrivia();
+            string trimmedLeadingTrivia = leadingTrivia.ToString().TrimEnd();
+            SyntaxTrivia desiredNewlines = GetNewlinesForNamespaceLeadingTrivia(namespaceNode);
+            SyntaxTrivia newLeadingTrivia = SyntaxFactory.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, trimmedLeadingTrivia);
+            SyntaxTriviaList updatedLeadingTrivia = SyntaxFactory.TriviaList(newLeadingTrivia, desiredNewlines);
+            return namespaceNode.WithLeadingTrivia(updatedLeadingTrivia);
         }
 
         private static SyntaxNode FormatNewlines(SyntaxNode root)
@@ -121,28 +123,24 @@ namespace Gjeltema.CSharpener.Logic.Trivia
 
         private static SyntaxTrivia GetNewlinesForNamespaceLeadingTrivia(SyntaxNode namespaceNode)
         {
-            SyntaxNode parent = namespaceNode.Parent;
-            if (parent == null)
+            // Presumably this is the Document root node
+            SyntaxNode rootNode = namespaceNode.Parent;
+            if (rootNode == null)
                 return doubleNewLine;
-            SyntaxNode syntaxNode = null;
-            foreach (SyntaxNode childNode in parent.ChildNodes())
+
+            SyntaxNode previousNode = null;
+            foreach (SyntaxNode node in rootNode.ChildNodes())
             {
-                if (childNode is NamespaceDeclarationSyntax)
+                if (node is NamespaceDeclarationSyntax)
                 {
-                    switch (syntaxNode)
-                    {
-                        case UsingDirectiveSyntax _:
-                            return SyntaxFactory.CarriageReturnLineFeed;
-                        case ClassDeclarationSyntax _:
-                            return emptyTrivia;
-                        default:
-                            return doubleNewLine;
-                    }
+                    if (previousNode is UsingDirectiveSyntax)
+                        return SyntaxFactory.CarriageReturnLineFeed;
+                    else if (previousNode is ClassDeclarationSyntax)
+                        return emptyTrivia;
+                    else
+                        return doubleNewLine;
                 }
-                else
-                {
-                    syntaxNode = childNode;
-                }
+                previousNode = node;
             }
 
             return doubleNewLine;
