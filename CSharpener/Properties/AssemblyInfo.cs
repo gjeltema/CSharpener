@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿// -----------------------------------------------------------------------
+// AssemblyInfo.cs Copyright 2020 Craig Gjeltema
+// -----------------------------------------------------------------------
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
