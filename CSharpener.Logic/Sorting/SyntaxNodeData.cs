@@ -90,6 +90,9 @@ namespace Gjeltema.CSharpener.Logic.Sorting
                 case InterfaceDeclarationSyntax inds:
                     Identifier = inds.Identifier.ValueText;
                     return inds.Modifiers;
+                case RecordDeclarationSyntax rds:
+                    Identifier = rds.Identifier.ValueText;
+                    return rds.Modifiers;
                 default:
                     Identifier = "zzz";
                     return new SyntaxTokenList();

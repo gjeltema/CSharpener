@@ -4,7 +4,8 @@
     <TargetFramework>net48</TargetFramework>
     <AssemblyTitle>Gjeltema.CSharpener.Logic</AssemblyTitle>
     <Product>CSharpener</Product>
-    <Copyright>Copyright Craig Gjeltema © 2019</Copyright>
+    <Copyright>Copyright Craig Gjeltema © 2020</Copyright>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0" />

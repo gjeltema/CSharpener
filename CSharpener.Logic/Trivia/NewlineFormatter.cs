@@ -39,6 +39,12 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return base.VisitNamespaceDeclaration(formattedNode);
         }
 
+        public override SyntaxNode VisitRecordDeclaration(RecordDeclarationSyntax node)
+        {
+            var formattedNode = FormatNewlines(node) as RecordDeclarationSyntax;
+            return base.VisitRecordDeclaration(formattedNode);
+        }
+
         private static SyntaxNode CleanLastTokenLeadingTrivia(SyntaxNode nodeToBeUpdated)
         {
             SyntaxToken lastToken = nodeToBeUpdated.GetLastToken();
@@ -154,7 +160,8 @@ namespace Gjeltema.CSharpener.Logic.Trivia
                 kind == SyntaxKind.BaseList || // Class inheritance list
                 kind == SyntaxKind.TypeParameterList || // Generic parameter list
                 kind == SyntaxKind.TypeParameterConstraintClause || // Generic constraint 'where' clauses
-                kind == SyntaxKind.AttributeList; // Attributes decorating a class
+                kind == SyntaxKind.AttributeList || // Attributes decorating a class
+                kind == SyntaxKind.ParameterList; // record parameter list when using "default constructor" syntax
         }
 
         /// <summary>
