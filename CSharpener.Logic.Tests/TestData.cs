@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// TestData.cs Copyright 2020 Craig Gjeltema
+// TestData.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests
@@ -442,7 +442,7 @@ namespace TestDummy
 }
 ";
         public const string UsingsInAndOutsideNamespaceAfterFileHeader = @"// -------------------------------------------
-// Test Header for TestFile.cs Copyright 2020
+// Test Header for TestFile.cs Copyright 2021
 // -------------------------------------------
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -471,7 +471,7 @@ namespace TestDummy
 }
 ";
         public const string UsingsInAndOutsideNamespaceAfterNewline = @"// -------------------------------------------
-// Test Header for TestFile.cs Copyright 2020
+// Test Header for TestFile.cs Copyright 2021
 // -------------------------------------------
 
 namespace TestDummy
@@ -500,7 +500,7 @@ using System.Collections.ObjectModel;
 }
 ";
         public const string UsingsInAndOutsideNamespaceWithCorrectFileHeader = @"// -------------------------------------------
-// Test Header for TestFile.cs Copyright 2020
+// Test Header for TestFile.cs Copyright 2021
 // -------------------------------------------
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -589,7 +589,7 @@ namespace TestDummy
     }
 }";
         public const string UsingsOnlyOutsideNamespaceAfterFileHeader = @"// -------------------------------------------
-// Test Header for AnotherTestFile.cs Copyright 2020
+// Test Header for AnotherTestFile.cs Copyright 2021
 // -------------------------------------------
 
 using System.Runtime.InteropServices;
@@ -621,7 +621,7 @@ namespace TestDummy
     }
 }";
         public const string UsingsOnlyOutsideNamespaceAfterNewline = @"// -------------------------------------------
-// Test Header for AnotherTestFile.cs Copyright 2020
+// Test Header for AnotherTestFile.cs Copyright 2021
 // -------------------------------------------
 
 namespace TestDummy
@@ -646,7 +646,7 @@ using System.Collections.ObjectModel;
     }
 }";
         public const string UsingsOnlyOutsideNamespaceWithCorrectFileHeader = @"// -------------------------------------------
-// Test Header for AnotherTestFile.cs Copyright 2020
+// Test Header for AnotherTestFile.cs Copyright 2021
 // -------------------------------------------
 
 using System.Runtime.InteropServices;
