@@ -675,5 +675,140 @@ namespace TestDummy
     {
     }
 }";
+
+        public const string ExpressionBodiedMethod = @"
+namespace TestDummy
+{
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public class Program
+    {
+        private IList<int> ints = new List<int>();
+
+        public int MyProperty1 => 3;
+
+        public int MyProperty2 => 
+            3;
+
+        public int MyProperty3 => // Some comment
+
+            3;
+
+        public int MyProperty4 => 
+            // Another comment
+            3;
+
+        // Should not be formatted, so white space after property name should remain
+        public int MyProperty5 
+            => 3;
+
+        public Func<bool> MyProperty6 => x => x == 3;
+
+        // Test inline method that should be formatted
+        public int MyMethod1() => ints.Single(x => x == 3);
+
+        // Test method that has a comment in between and should not be formatted
+        public int MyMethod2()  // Some method
+
+            => ints.Single(x => x == 3);
+
+        // Test method that has multiple newlines but no comment in between and should be formatted
+        public int MyMethod3()
+
+
+=> ints.Single(x => x == 3);
+
+        // Test standard block method with a lambda token that should not be formatted
+        public int Method4()
+        {
+            return ints.Single(x => x == 3);
+        }
+
+        // Test method that has a lambda token within the 'expression' implementation of the method.
+        public Func<bool> Method5() => x => x == 3;
+
+        // Test method that is improperly formatted.
+        public Func<bool> Method6() => 
+            x => x == 3;
+
+        // Test method with generic identifier and constraint that needs to be formatted.
+        public string Method7<T>(T input) where T : class => input.ToString();
+
+        // Test method with generic identifier and constraint that needs to be formatted, with a comment in the expression.
+        public string Method8<T>(T input) where T : class => 
+            // This is the input as a string
+            input.ToString();
+    }
+}";
+
+        public const string ExpressionBodiedMethodAfterFormatting = @"
+namespace TestDummy
+{
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public class Program
+    {
+        private IList<int> ints = new List<int>();
+
+        public int MyProperty1
+            => 3;
+
+        public int MyProperty2
+            => 3;
+
+        public int MyProperty3
+            => // Some comment
+3;
+
+        public int MyProperty4
+            => // Another comment
+            3;
+
+        // Should not be formatted, so white space after property name should remain
+        public int MyProperty5 
+            => 3;
+
+        public Func<bool> MyProperty6
+            => x => x == 3;
+
+        // Test inline method that should be formatted
+        public int MyMethod1()
+            => ints.Single(x => x == 3);
+
+        // Test method that has a comment in between and should not be formatted
+        public int MyMethod2()  // Some method
+
+            => ints.Single(x => x == 3);
+
+        // Test method that has multiple newlines but no comment in between and should be formatted
+        public int MyMethod3()
+            => ints.Single(x => x == 3);
+
+        // Test standard block method with a lambda token that should not be formatted
+        public int Method4()
+        {
+            return ints.Single(x => x == 3);
+        }
+
+        // Test method that has a lambda token within the 'expression' implementation of the method.
+        public Func<bool> Method5()
+            => x => x == 3;
+
+        // Test method that is improperly formatted.
+        public Func<bool> Method6()
+            => x => x == 3;
+
+        // Test method with generic identifier and constraint that needs to be formatted.
+        public string Method7<T>(T input) where T : class
+            => input.ToString();
+
+        // Test method with generic identifier and constraint that needs to be formatted, with a comment in the expression.
+        public string Method8<T>(T input) where T : class
+            => // This is the input as a string
+            input.ToString();
+    }
+}";
     }
 }

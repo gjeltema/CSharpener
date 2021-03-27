@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// LongLineFormatter.cs Copyright 2020 Craig Gjeltema
+// LongLineFormatter.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Trivia
@@ -13,10 +13,10 @@ namespace Gjeltema.CSharpener.Logic.Trivia
 
     public sealed class LongLineFormatter : CSharpSyntaxRewriter
     {
+        private const string IndentSpacing = "    ";
         private static readonly SyntaxTrivia emptyTrivia = SyntaxFactory.SyntaxTrivia(SyntaxKind.SingleLineCommentTrivia, "");
-        private readonly string IndentSpacing = "    ";
+        private static readonly string[] NewlineSeparator = new[] { Environment.NewLine };
         private readonly int MaxLengthOfLine;
-        private readonly string[] NewlineSeparator = new[] { Environment.NewLine };
 
         public LongLineFormatter(int maxLengthOfLine)
         {
@@ -97,7 +97,8 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return descendantTokens;
         }
 
-        private string GetFirstNonEmptyString(string[] nodeLines) => nodeLines.First(x => x.Trim().Length > 0);
+        private string GetFirstNonEmptyString(string[] nodeLines)
+            => nodeLines.First(x => x.Trim().Length > 0);
 
         private SyntaxTrivia GetNewTrivia(string nodeLine)
         {
@@ -114,7 +115,8 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return GetNewTrivia(firstNonEmptyString);
         }
 
-        private string GetSpaceString(int numberOfSpaces) => new string(' ', numberOfSpaces);
+        private string GetSpaceString(int numberOfSpaces)
+            => new(' ', numberOfSpaces);
 
         private int IndexOfFirstNonWhitespace(string input)
         {
