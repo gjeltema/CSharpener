@@ -14,6 +14,7 @@ namespace CSharpener.Logic.Tests.Trivia
     public class NewlineFormatterTests
     {
         [TestCase(TestData.ClassWithAttributes, TestData.ClassWithAttributesAfterNewline)]
+        [TestCase(TestData.RecordWithAttributes, TestData.RecordWithAttributesAfterNewline)]
         public void CodeText_WhenRegionAndNewlineFormattingsRun_OutputsExpectedText(string inputString, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);

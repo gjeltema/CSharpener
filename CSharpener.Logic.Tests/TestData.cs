@@ -4,7 +4,7 @@
 
 namespace CSharpener.Logic.Tests
 {
-    internal class TestData
+    internal static class TestData
     {
         public const string ClassWithAttributes = @"namespace TestDummy
 {
@@ -239,6 +239,139 @@ namespace TestDummy
         string ZZShouldBeAtTheEnd(string moreInput);
     }
 ";
+        public const string ExpressionBodiedMethod = @"
+namespace TestDummy
+{
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public class Program
+    {
+        private IList<int> ints = new List<int>();
+
+        public int MyProperty1 => 3;
+
+        public int MyProperty2 => 
+            3;
+
+        public int MyProperty3 => // Some comment
+
+            3;
+
+        public int MyProperty4 => 
+            // Another comment
+            3;
+
+        // Should not be formatted, so white space after property name should remain
+        public int MyProperty5 
+            => 3;
+
+        public Func<bool> MyProperty6 => x => x == 3;
+
+        // Test inline method that should be formatted
+        public int MyMethod1() => ints.Single(x => x == 3);
+
+        // Test method that has a comment in between and should not be formatted
+        public int MyMethod2()  // Some method
+
+            => ints.Single(x => x == 3);
+
+        // Test method that has multiple newlines but no comment in between and should be formatted
+        public int MyMethod3()
+
+
+=> ints.Single(x => x == 3);
+
+        // Test standard block method with a lambda token that should not be formatted
+        public int Method4()
+        {
+            return ints.Single(x => x == 3);
+        }
+
+        // Test method that has a lambda token within the 'expression' implementation of the method.
+        public Func<bool> Method5() => x => x == 3;
+
+        // Test method that is improperly formatted.
+        public Func<bool> Method6() => 
+            x => x == 3;
+
+        // Test method with generic identifier and constraint that needs to be formatted.
+        public string Method7<T>(T input) where T : class => input.ToString();
+
+        // Test method with generic identifier and constraint that needs to be formatted, with a comment in the expression.
+        public string Method8<T>(T input) where T : class => 
+            // This is the input as a string
+            input.ToString();
+    }
+}";
+        public const string ExpressionBodiedMethodAfterFormatting = @"
+namespace TestDummy
+{
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public class Program
+    {
+        private IList<int> ints = new List<int>();
+
+        public int MyProperty1
+            => 3;
+
+        public int MyProperty2
+            => 3;
+
+        public int MyProperty3
+            => // Some comment
+3;
+
+        public int MyProperty4
+            => // Another comment
+            3;
+
+        // Should not be formatted, so white space after property name should remain
+        public int MyProperty5 
+            => 3;
+
+        public Func<bool> MyProperty6
+            => x => x == 3;
+
+        // Test inline method that should be formatted
+        public int MyMethod1()
+            => ints.Single(x => x == 3);
+
+        // Test method that has a comment in between and should not be formatted
+        public int MyMethod2()  // Some method
+
+            => ints.Single(x => x == 3);
+
+        // Test method that has multiple newlines but no comment in between and should be formatted
+        public int MyMethod3()
+            => ints.Single(x => x == 3);
+
+        // Test standard block method with a lambda token that should not be formatted
+        public int Method4()
+        {
+            return ints.Single(x => x == 3);
+        }
+
+        // Test method that has a lambda token within the 'expression' implementation of the method.
+        public Func<bool> Method5()
+            => x => x == 3;
+
+        // Test method that is improperly formatted.
+        public Func<bool> Method6()
+            => x => x == 3;
+
+        // Test method with generic identifier and constraint that needs to be formatted.
+        public string Method7<T>(T input) where T : class
+            => input.ToString();
+
+        // Test method with generic identifier and constraint that needs to be formatted, with a comment in the expression.
+        public string Method8<T>(T input) where T : class
+            => // This is the input as a string
+            input.ToString();
+    }
+}";
         public const string InterfaceAfterSorting = @"namespace TestDummy
 {
 
@@ -333,6 +466,89 @@ namespace TestDummy
         double AABeginning(int data, string moarData);
 
         void LaterFunctionButNotLast();
+    }
+}";
+        public const string RecordAfterSorting = @"namespace TestDummy
+{
+    using System;
+
+    public record Program(int Id, string Name)
+    {
+
+        public string Abacus { get; init; }
+
+        public string Description { get; init; }
+        public string Elided { get; init; }
+
+        public string Xylophone { get; init; }
+    }
+}";
+        public const string RecordAfterSortingAndFormattingNewlines = @"
+
+namespace TestDummy
+{
+    using System;
+
+    public record Program(int Id, string Name)
+    {
+        public string Abacus { get; init; }
+
+        public string Description { get; init; }
+
+        public string Elided { get; init; }
+
+        public string Xylophone { get; init; }
+    }
+}";
+        public const string RecordBeforeSorting = @"namespace TestDummy
+{
+    using System;
+
+    public record Program(int Id, string Name)
+    {
+        public string Elided { get; init; }
+
+        public string Description { get; init; }
+
+        public string Xylophone { get; init; }
+
+        public string Abacus { get; init; }
+    }
+}";
+        public const string RecordWithAttributes = @"namespace TestDummy
+{
+
+    using System;
+
+
+
+    /// <summary>
+    /// This is the record that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+
+    public record Program(int Id, string Name)
+    {
+        
+        public string Description { get; init; }
+
+
+    }
+}";
+        public const string RecordWithAttributesAfterNewline = @"
+
+namespace TestDummy
+{
+    using System;
+
+    /// <summary>
+    /// This is the record that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+
+    public record Program(int Id, string Name)
+    {
+        public string Description { get; init; }
     }
 }";
         public const string TestConfig =
@@ -673,141 +889,6 @@ namespace TestDummy
 
     class Program : SecondClass
     {
-    }
-}";
-
-        public const string ExpressionBodiedMethod = @"
-namespace TestDummy
-{
-    using System.Collections.Generic;
-    using System.Linq;
-
-    public class Program
-    {
-        private IList<int> ints = new List<int>();
-
-        public int MyProperty1 => 3;
-
-        public int MyProperty2 => 
-            3;
-
-        public int MyProperty3 => // Some comment
-
-            3;
-
-        public int MyProperty4 => 
-            // Another comment
-            3;
-
-        // Should not be formatted, so white space after property name should remain
-        public int MyProperty5 
-            => 3;
-
-        public Func<bool> MyProperty6 => x => x == 3;
-
-        // Test inline method that should be formatted
-        public int MyMethod1() => ints.Single(x => x == 3);
-
-        // Test method that has a comment in between and should not be formatted
-        public int MyMethod2()  // Some method
-
-            => ints.Single(x => x == 3);
-
-        // Test method that has multiple newlines but no comment in between and should be formatted
-        public int MyMethod3()
-
-
-=> ints.Single(x => x == 3);
-
-        // Test standard block method with a lambda token that should not be formatted
-        public int Method4()
-        {
-            return ints.Single(x => x == 3);
-        }
-
-        // Test method that has a lambda token within the 'expression' implementation of the method.
-        public Func<bool> Method5() => x => x == 3;
-
-        // Test method that is improperly formatted.
-        public Func<bool> Method6() => 
-            x => x == 3;
-
-        // Test method with generic identifier and constraint that needs to be formatted.
-        public string Method7<T>(T input) where T : class => input.ToString();
-
-        // Test method with generic identifier and constraint that needs to be formatted, with a comment in the expression.
-        public string Method8<T>(T input) where T : class => 
-            // This is the input as a string
-            input.ToString();
-    }
-}";
-
-        public const string ExpressionBodiedMethodAfterFormatting = @"
-namespace TestDummy
-{
-    using System.Collections.Generic;
-    using System.Linq;
-
-    public class Program
-    {
-        private IList<int> ints = new List<int>();
-
-        public int MyProperty1
-            => 3;
-
-        public int MyProperty2
-            => 3;
-
-        public int MyProperty3
-            => // Some comment
-3;
-
-        public int MyProperty4
-            => // Another comment
-            3;
-
-        // Should not be formatted, so white space after property name should remain
-        public int MyProperty5 
-            => 3;
-
-        public Func<bool> MyProperty6
-            => x => x == 3;
-
-        // Test inline method that should be formatted
-        public int MyMethod1()
-            => ints.Single(x => x == 3);
-
-        // Test method that has a comment in between and should not be formatted
-        public int MyMethod2()  // Some method
-
-            => ints.Single(x => x == 3);
-
-        // Test method that has multiple newlines but no comment in between and should be formatted
-        public int MyMethod3()
-            => ints.Single(x => x == 3);
-
-        // Test standard block method with a lambda token that should not be formatted
-        public int Method4()
-        {
-            return ints.Single(x => x == 3);
-        }
-
-        // Test method that has a lambda token within the 'expression' implementation of the method.
-        public Func<bool> Method5()
-            => x => x == 3;
-
-        // Test method that is improperly formatted.
-        public Func<bool> Method6()
-            => x => x == 3;
-
-        // Test method with generic identifier and constraint that needs to be formatted.
-        public string Method7<T>(T input) where T : class
-            => input.ToString();
-
-        // Test method with generic identifier and constraint that needs to be formatted, with a comment in the expression.
-        public string Method8<T>(T input) where T : class
-            => // This is the input as a string
-            input.ToString();
     }
 }";
     }

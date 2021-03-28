@@ -15,6 +15,7 @@ namespace CSharpener.Logic.Tests.Sorting
     public class CSharpSorterTests
     {
         [TestCase(TestData.InterfaceBeforeSorting, TestData.InterfaceAfterSorting)]
+        [TestCase(TestData.RecordBeforeSorting, TestData.RecordAfterSorting)]
         public void CodeTextWithInterface_WhenSorterIsRun_OutputsSortedCodeText(string inputString, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);
@@ -29,6 +30,7 @@ namespace CSharpener.Logic.Tests.Sorting
         }
 
         [TestCase(TestData.InterfaceBeforeSorting, TestData.InterfaceAfterSortingAndFormattingNewlines)]
+        [TestCase(TestData.RecordBeforeSorting, TestData.RecordAfterSortingAndFormattingNewlines)]
         public void CodeTextWithInterface_WhenSorterIsRunWithWhitespaceFormatter_OutputsSortedCodeText(string inputString, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);
