@@ -61,7 +61,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return base.VisitPropertyDeclaration(newNode as PropertyDeclarationSyntax);
         }
 
-        private SyntaxNode FormatMethodNode(SyntaxNode node, SyntaxNode lastNodeBeforeArrow, ArrowExpressionClauseSyntax arrowExpressionClause)
+        private static SyntaxNode FormatMethodNode(SyntaxNode node, SyntaxNode lastNodeBeforeArrow, ArrowExpressionClauseSyntax arrowExpressionClause)
         {
             SyntaxNode newParameterListNode = lastNodeBeforeArrow.WithTrailingTrivia(SingleNewline);
             SyntaxNode newArrowExpressionClause = GetNewArrowExpressionClause(node, arrowExpressionClause);
@@ -76,7 +76,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return newMethodNode;
         }
 
-        private SyntaxNode FormatPropertyNode(PropertyDeclarationSyntax node, SyntaxToken identifierToken, ArrowExpressionClauseSyntax arrowExpressionClause)
+        private static SyntaxNode FormatPropertyNode(PropertyDeclarationSyntax node, SyntaxToken identifierToken, ArrowExpressionClauseSyntax arrowExpressionClause)
         {
             SyntaxToken newIdentifierToken = identifierToken.WithTrailingTrivia(SingleNewline);
             ArrowExpressionClauseSyntax newArrowExpressionClause = GetNewArrowExpressionClause(node, arrowExpressionClause);
@@ -85,7 +85,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return newPropertyNode;
         }
 
-        private ArrowExpressionClauseSyntax GetNewArrowExpressionClause(SyntaxNode node, ArrowExpressionClauseSyntax arrowExpressionClause)
+        private static ArrowExpressionClauseSyntax GetNewArrowExpressionClause(SyntaxNode node, ArrowExpressionClauseSyntax arrowExpressionClause)
         {
             SyntaxTrivia newArrowExpressionLeadingTrivia = GetNewArrowLeadingTrivia(node);
 
@@ -102,7 +102,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return newArrowExpressionClause;
         }
 
-        private SyntaxTrivia GetNewArrowLeadingTrivia(SyntaxNode node)
+        private static SyntaxTrivia GetNewArrowLeadingTrivia(SyntaxNode node)
         {
             SyntaxTriviaList leadingTrivia = node.GetLeadingTrivia();
             string leadingTriviaString = leadingTrivia.ToString();
@@ -120,7 +120,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
         /// <summary>
         /// Returns 0, 1 or 2.  2 signifies "more than 1" which is all that is needed for this.
         /// </summary>
-        private int GetNumberOfNewlines(string input)
+        private static int GetNumberOfNewlines(string input)
         {
             int indexOfFirstNewline = input.IndexOf(Environment.NewLine);
             if (indexOfFirstNewline == -1)
@@ -130,10 +130,10 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return indexOfSecondNewline == -1 ? 1 : 2;
         }
 
-        private string GetSpaceString(int numberOfSpaces)
+        private static string GetSpaceString(int numberOfSpaces)
             => new(' ', numberOfSpaces);
 
-        private bool ShouldFormat(SyntaxNode arrowExpression, SyntaxNodeOrToken nodeBeforeArrow)
+        private static bool ShouldFormat(SyntaxNode arrowExpression, SyntaxNodeOrToken nodeBeforeArrow)
         {
             // Should format if: trimmed arrow leading trivia is empty, and trimmed parameter list trailing trivia 
             // is empty and it does not end in a newline or contains more than 1 newline.
@@ -159,7 +159,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return !((numberOfArrowNewlines == 1 && numberOfBeforeNodeNewlines == 0) || (numberOfArrowNewlines == 0 && numberOfBeforeNodeNewlines == 1));
         }
 
-        private SyntaxToken UpdateArrowTokenTrailingTrivia(SyntaxToken arrowToken)
+        private static SyntaxToken UpdateArrowTokenTrailingTrivia(SyntaxToken arrowToken)
         {
             string arrowTokenTrailingTrivia = arrowToken.TrailingTrivia.ToString();
             return arrowToken.WithTrailingTrivia(SyntaxFactory.SyntaxTrivia(SyntaxKind.WhitespaceTrivia, " " + arrowTokenTrailingTrivia.TrimStart()));

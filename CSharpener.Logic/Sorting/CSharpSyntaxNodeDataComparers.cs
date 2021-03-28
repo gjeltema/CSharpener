@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// CSharpSyntaxNodeDataComparers.cs Copyright 2020 Craig Gjeltema
+// CSharpSyntaxNodeDataComparers.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
@@ -181,7 +181,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             return argumentTypeNameCompareResult;
         }
 
-        private int CompareArgumentTypeNames(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
+        private static int CompareArgumentTypeNames(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
         {
             for (int argumentIndex = 0; argumentIndex < leftData.NumberOfMethodArguments; argumentIndex++)
             {

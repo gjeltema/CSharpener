@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// UsingsPlacer.cs Copyright 2020 Craig Gjeltema
+// UsingsPlacer.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Usings
@@ -22,7 +22,7 @@ namespace Gjeltema.CSharpener.Logic.Usings
             return newRootNode;
         }
 
-        private ICollection<UsingDirectiveSyntax> FormatUsings(IList<UsingDirectiveSyntax> usingsThatNeedToBeMoved)
+        private static ICollection<UsingDirectiveSyntax> FormatUsings(IList<UsingDirectiveSyntax> usingsThatNeedToBeMoved)
         {
             var newList = new List<UsingDirectiveSyntax>(usingsThatNeedToBeMoved.Count);
             for (int i = 0; i < usingsThatNeedToBeMoved.Count; i++)
@@ -41,7 +41,7 @@ namespace Gjeltema.CSharpener.Logic.Usings
             return newList;
         }
 
-        private IList<UsingDirectiveSyntax> GetUsingsInWrongPlace(SyntaxNode rootNode)
+        private static IList<UsingDirectiveSyntax> GetUsingsInWrongPlace(SyntaxNode rootNode)
         {
             bool namespaceNodeFound = false;
             IList<UsingDirectiveSyntax> usingNodes = new List<UsingDirectiveSyntax>();
@@ -61,7 +61,7 @@ namespace Gjeltema.CSharpener.Logic.Usings
             return usingNodes;
         }
 
-        private SyntaxNode PutUsingsInRightPlace(SyntaxNode rootNode, IList<UsingDirectiveSyntax> usingsThatNeedToBeMoved)
+        private static SyntaxNode PutUsingsInRightPlace(SyntaxNode rootNode, IList<UsingDirectiveSyntax> usingsThatNeedToBeMoved)
         {
             try
             {

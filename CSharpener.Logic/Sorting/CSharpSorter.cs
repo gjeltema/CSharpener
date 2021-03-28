@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// CSharpSorter.cs Copyright 2020 Craig Gjeltema
+// CSharpSorter.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
@@ -83,7 +83,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             return finalRecordDeclarationNode;
         }
 
-        private class NodeSorter : IComparer<MemberDeclarationSyntax>
+        private sealed class NodeSorter : IComparer<MemberDeclarationSyntax>
         {
             private delegate SyntaxNodeSorter SorterCreator(SortingConfiguration sortConfig);
 

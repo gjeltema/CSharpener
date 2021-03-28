@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// SortingConfiguration.cs Copyright 2020 Craig Gjeltema
+// SortingConfiguration.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
@@ -75,7 +75,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
 
         internal IList<Sorter> ModifiersSortOrder { get; }
 
-        private IDictionary<AccessModifier, int> InitializeAccessModifierSortOrder(IList<string> configurationItems)
+        private static IDictionary<AccessModifier, int> InitializeAccessModifierSortOrder(IList<string> configurationItems)
         {
             IDictionary<AccessModifier, int> accessModifierFromConfig = new Dictionary<AccessModifier, int>();
             int sortOrder = 0;
@@ -96,7 +96,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             return accessModifierFromConfig;
         }
 
-        private IDictionary<SyntaxKind, int> InitializeKindSortOrder(IList<string> configurationItems)
+        private static IDictionary<SyntaxKind, int> InitializeKindSortOrder(IList<string> configurationItems)
         {
             IDictionary<SyntaxKind, int> kindSortOrderFromConfig = new Dictionary<SyntaxKind, int>();
             int sortOrder = 0;
@@ -117,7 +117,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             return kindSortOrderFromConfig;
         }
 
-        private IList<Sorter> InitializeModifiersSortOrder(IList<string> configurationItems)
+        private static IList<Sorter> InitializeModifiersSortOrder(IList<string> configurationItems)
         {
             IList<Sorter> modifierFromConfig = new List<Sorter>();
             foreach (string configItem in configurationItems)

@@ -83,7 +83,8 @@ namespace Gjeltema.CSharpener.Commands
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private async void Execute(object sender, EventArgs e) => await FormatAndSortCodeAsync();
+        private async void Execute(object sender, EventArgs e) 
+            => await FormatAndSortCodeAsync();
 
         private async Task FormatAndSortCodeAsync()
         {
@@ -92,6 +93,7 @@ namespace Gjeltema.CSharpener.Commands
                 Document activeDocument = await VisualStudioHelper.GetActiveDocumentAsync();
                 if (VisualStudioHelper.FileIsExcludedType(activeDocument.FilePath))
                     return;
+
                 SyntaxNode root = await VisualStudioHelper.GetDocumentRootAsync(activeDocument);
                 bool isCSharpDocument = root.Language == VisualStudioHelper.CSharpLanguageName;
                 if (!isCSharpDocument)
@@ -107,8 +109,11 @@ namespace Gjeltema.CSharpener.Commands
                 var fhf = new FileHeaderFormatter();
                 SyntaxNode fhfRoot = fhf.AddHeader(usingsRoot, fileName);
 
+                var ebf = new ExpressionBodiedFormatter();
+                SyntaxNode ebfRoot = ebf.Visit(fhfRoot);
+
                 var sorter = new CSharpSorter();
-                SyntaxNode sorterRoot = sorter.Visit(fhfRoot);
+                SyntaxNode sorterRoot = sorter.Visit(ebfRoot);
 
                 var newLineFormatter = new NewlineFormatter();
                 SyntaxNode formattedRoot = newLineFormatter.Visit(sorterRoot);

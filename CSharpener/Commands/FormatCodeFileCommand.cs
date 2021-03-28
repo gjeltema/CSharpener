@@ -82,7 +82,8 @@ namespace Gjeltema.CSharpener.Commands
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private async void Execute(object sender, EventArgs e) => await FormatCodeAsync();
+        private async void Execute(object sender, EventArgs e) 
+            => await FormatCodeAsync();
 
         private async Task FormatCodeAsync()
         {
@@ -94,6 +95,7 @@ namespace Gjeltema.CSharpener.Commands
                 Document activeDocument = await VisualStudioHelper.GetActiveDocumentAsync();
                 if (VisualStudioHelper.FileIsExcludedType(activeDocument.FilePath))
                     return;
+
                 SyntaxNode root = await VisualStudioHelper.GetDocumentRootAsync(activeDocument);
                 bool isCSharpDocument = root.Language == VisualStudioHelper.CSharpLanguageName;
                 if (!isCSharpDocument)
@@ -109,8 +111,11 @@ namespace Gjeltema.CSharpener.Commands
                 var fhf = new FileHeaderFormatter();
                 SyntaxNode fhfRoot = fhf.AddHeader(usingsRoot, fileName);
 
+                var ebf = new ExpressionBodiedFormatter();
+                SyntaxNode ebfRoot = ebf.Visit(fhfRoot);
+
                 var newLineFormatter = new NewlineFormatter();
-                SyntaxNode formattedRoot = newLineFormatter.Visit(fhfRoot);
+                SyntaxNode formattedRoot = newLineFormatter.Visit(ebfRoot);
 
                 Document newDocument = activeDocument.WithSyntaxRoot(formattedRoot);
                 bool success = await VisualStudioHelper.ApplyDocumentChangesAsync(newDocument);

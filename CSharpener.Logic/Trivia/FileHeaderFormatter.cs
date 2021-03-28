@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// FileHeaderFormatter.cs Copyright 2020 Craig Gjeltema
+// FileHeaderFormatter.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Trivia
@@ -36,7 +36,7 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return newRoot;
         }
 
-        private string FormatHeader(string header, string fileName)
+        private static string FormatHeader(string header, string fileName)
         {
             string cleanedHeader = header.Trim() + Environment.NewLine + Environment.NewLine;
             string headerWithYear = cleanedHeader.Replace(YearFormat, DateTime.Today.Year.ToString());
@@ -44,16 +44,16 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             return headerWithFilename;
         }
 
-        private SyntaxNode GetFirstNode(SyntaxNode root)
+        private static SyntaxNode GetFirstNode(SyntaxNode root)
             => root.ChildNodes().FirstOrDefault();
 
-        private SyntaxTriviaList GetLeadingTrivia(SyntaxNode firstNode)
+        private static SyntaxTriviaList GetLeadingTrivia(SyntaxNode firstNode)
         {
             SyntaxTriviaList leadingTrivia = firstNode.GetLeadingTrivia();
             return leadingTrivia;
         }
 
-        private bool TriviaContainsHeader(SyntaxTriviaList triviaList, string header)
+        private static bool TriviaContainsHeader(SyntaxTriviaList triviaList, string header)
         {
             string triviaString = triviaList.ToFullString();
             return triviaString.StartsWith(header);
