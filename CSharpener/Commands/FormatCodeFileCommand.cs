@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// FormatCodeFileCommand.cs Copyright 2020 Craig Gjeltema
+// FormatCodeFileCommand.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Commands
@@ -61,7 +61,8 @@ namespace Gjeltema.CSharpener.Commands
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IAsyncServiceProvider ServiceProvider => package;
+        private IAsyncServiceProvider ServiceProvider
+            => package;
 
         /// <summary>
         /// Initializes the singleton instance of the command.
@@ -82,7 +83,7 @@ namespace Gjeltema.CSharpener.Commands
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private async void Execute(object sender, EventArgs e) 
+        private async void Execute(object sender, EventArgs e)
             => await FormatCodeAsync();
 
         private async Task FormatCodeAsync()
@@ -111,13 +112,13 @@ namespace Gjeltema.CSharpener.Commands
                 var fhf = new FileHeaderFormatter();
                 SyntaxNode fhfRoot = fhf.AddHeader(usingsRoot, fileName);
 
-                var ebf = new ExpressionBodiedFormatter();
-                SyntaxNode ebfRoot = ebf.Visit(fhfRoot);
-
                 var newLineFormatter = new NewlineFormatter();
-                SyntaxNode formattedRoot = newLineFormatter.Visit(ebfRoot);
+                SyntaxNode newLineRoot = newLineFormatter.Visit(fhfRoot);
 
-                Document newDocument = activeDocument.WithSyntaxRoot(formattedRoot);
+                var ebf = new ExpressionBodiedFormatter();
+                SyntaxNode ebfRoot = ebf.Visit(newLineRoot);
+
+                Document newDocument = activeDocument.WithSyntaxRoot(ebfRoot);
                 bool success = await VisualStudioHelper.ApplyDocumentChangesAsync(newDocument);
 
                 await VisualStudioHelper.InvokeCommandAsync(VisualStudioHelper.RunDefaultCodeCleanup);

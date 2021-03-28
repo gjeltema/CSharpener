@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// NewlineFormatterTests.cs Copyright 2020 Craig Gjeltema
+// NewlineFormatterTests.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Trivia

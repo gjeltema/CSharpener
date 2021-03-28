@@ -611,7 +611,8 @@ private string _name;
 
         }
 
-        public bool IsAvailable => true;
+        public bool IsAvailable
+            => true;
 
         public string Name
         {
@@ -868,7 +869,8 @@ private string _name;
 
         }
 
-        public bool IsAvailable => true;
+        public bool IsAvailable
+            => true;
 
         public string Name
         {

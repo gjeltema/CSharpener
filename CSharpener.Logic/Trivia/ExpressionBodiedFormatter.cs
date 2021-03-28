@@ -42,11 +42,13 @@ namespace Gjeltema.CSharpener.Logic.Trivia
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
-            var arrowExpressionClause = node.ChildNodes().Single(x => x.Kind() == SyntaxKind.ArrowExpressionClause) as ArrowExpressionClauseSyntax;
+            var arrowExpressionClause = node.ChildNodes().SingleOrDefault(x => x.Kind() == SyntaxKind.ArrowExpressionClause) as ArrowExpressionClauseSyntax;
             if (arrowExpressionClause == null)
                 return base.VisitPropertyDeclaration(node);
 
-            SyntaxToken identifierToken = node.ChildTokens().Single(x => x.Kind() == SyntaxKind.IdentifierToken);
+            SyntaxToken identifierToken = node.ChildTokens().SingleOrDefault(x => x.Kind() == SyntaxKind.IdentifierToken);
+            if (identifierToken.Kind() != SyntaxKind.IdentifierToken)
+                return base.VisitPropertyDeclaration(node);
 
             string arrowLeadingTrivia = arrowExpressionClause.GetLeadingTrivia().ToString();
             string identifierTrailingTrivia = identifierToken.TrailingTrivia.ToString();
@@ -108,10 +110,11 @@ namespace Gjeltema.CSharpener.Logic.Trivia
             string leadingTriviaString = leadingTrivia.ToString();
             int indexOfLastNewline = leadingTriviaString.LastIndexOf(Environment.NewLine);
 
-            int lengthOfLastLineleadingTrivia = leadingTriviaString.Length - indexOfLastNewline - Environment.NewLine.Length;
+            int lengthOfLastLineleadingTrivia = leadingTriviaString.Length;
+            if (indexOfLastNewline != -1)
+                lengthOfLastLineleadingTrivia = lengthOfLastLineleadingTrivia - indexOfLastNewline - Environment.NewLine.Length;
 
-            // If the method is not declared on the next line after the preceding statement (for some odd formatting reason), then just use the existing trivia.
-            if (indexOfLastNewline == -1 || lengthOfLastLineleadingTrivia == 0)
+            if (lengthOfLastLineleadingTrivia <= 0)
                 return SyntaxFactory.SyntaxTrivia(SyntaxKind.WhitespaceTrivia, IndentSpacing);
 
             return SyntaxFactory.SyntaxTrivia(SyntaxKind.WhitespaceTrivia, GetSpaceString(lengthOfLastLineleadingTrivia) + IndentSpacing);

@@ -268,6 +268,9 @@ namespace TestDummy
 
         public Func<bool> MyProperty6 => x => x == 3;
 
+        // This property to ensure that a regular (non expression) property is not messed with
+        public int MyProperty7 { get; private set; }
+
         // Test inline method that should be formatted
         public int MyMethod1() => ints.Single(x => x == 3);
 
@@ -334,6 +337,9 @@ namespace TestDummy
 
         public Func<bool> MyProperty6
             => x => x == 3;
+
+        // This property to ensure that a regular (non expression) property is not messed with
+        public int MyProperty7 { get; private set; }
 
         // Test inline method that should be formatted
         public int MyMethod1()

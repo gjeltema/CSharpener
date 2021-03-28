@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// CompositeTests.cs Copyright 2020 Craig Gjeltema
+// CompositeTests.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests
@@ -35,9 +35,12 @@ namespace CSharpener.Logic.Tests
             SyntaxNode sorterRoot = sorter.Visit(fhfRoot);
 
             var newLineFormatter = new NewlineFormatter();
-            SyntaxNode formattedRoot = newLineFormatter.Visit(sorterRoot);
+            SyntaxNode newLineRoot = newLineFormatter.Visit(sorterRoot);
 
-            string actualOutput = formattedRoot.ToFullString();
+            var ebf = new ExpressionBodiedFormatter();
+            SyntaxNode ebfRoot = ebf.Visit(newLineRoot);
+
+            string actualOutput = ebfRoot.ToFullString();
             Debug.WriteLine(actualOutput);
             Assert.That(actualOutput, Is.EqualTo(expectedOutput));
         }
@@ -56,9 +59,12 @@ namespace CSharpener.Logic.Tests
             SyntaxNode fhfRoot = fhf.AddHeader(usingsRoot, fileName);
 
             var newLineFormatter = new NewlineFormatter();
-            SyntaxNode formattedRoot = newLineFormatter.Visit(fhfRoot);
+            SyntaxNode newLineRoot = newLineFormatter.Visit(fhfRoot);
 
-            string actualOutput = formattedRoot.ToFullString();
+            var ebf = new ExpressionBodiedFormatter();
+            SyntaxNode ebfRoot = ebf.Visit(newLineRoot);
+
+            string actualOutput = ebfRoot.ToFullString();
             Debug.WriteLine(actualOutput);
             Assert.That(actualOutput, Is.EqualTo(expectedOutput));
         }
