@@ -59,6 +59,9 @@ namespace Gjeltema.CSharpener.Logic.Sorting
                     return fds.Modifiers;
                 case ConstructorDeclarationSyntax cnds:
                     Identifier = cnds.Identifier.ValueText;
+                    IList<ParameterSyntax> constructorArgs = cnds.ParameterList.Parameters.ToList();
+                    NumberOfMethodArguments = constructorArgs.Count;
+                    MethodArguments = constructorArgs.ToImmutableList();
                     return cnds.Modifiers;
                 case DelegateDeclarationSyntax dds:
                     Identifier = dds.Identifier.ValueText;

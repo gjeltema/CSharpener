@@ -173,6 +173,119 @@ Count();
         }
     }
 }";
+        public const string ClassWithMultipleConstructors = @"namespace TestDummy
+{
+    using System;
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    public class Program
+    {
+
+        private int numberOfSomething; // End of line comment
+        public Program()
+        {
+            var testList = new List<string>();
+        }
+        public Program(int number)
+        {
+            var testList = new List<string>();
+            numberOfSomething = number;
+        }
+        public Program(bool flag, int number)
+        {
+            var testList = flag ? new List<string>() : null;
+            numberOfSomething = number;
+        }
+        public Program(IList<string> collection, int number)
+        {
+            var testList = collection;
+            numberOfSomething = number;
+        }
+
+
+        public int GetValue(int initial, long final, double interim, int test)
+        {
+             return 3;
+        }
+        public void SomeWork(int someArg)
+        {
+            var anotherList = new List<string>
+            {  // Doesnt count as block
+                ""Test1"",
+                ""Test2""
+            };
+
+            int someUselessValue = GetValue(1234567890, 1234567890123456789L, 123456789.1234567, 9876543210);
+
+            int temp = 0;
+
+            if(anotherList.Count > 0) 
+                return; // Doesnt count as block
+            else
+            {
+                Console.WriteLine(""Successful"");
+            }
+        }
+    }
+}";
+        public const string ClassWithMultipleConstructorsAfterSort = @"namespace TestDummy
+{
+    using System;
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    public class Program
+    {
+        private int numberOfSomething; // End of line comment
+        public Program()
+        {
+            var testList = new List<string>();
+        }
+        public Program(int number)
+        {
+            var testList = new List<string>();
+            numberOfSomething = number;
+        }
+        public Program(bool flag, int number)
+        {
+            var testList = flag ? new List<string>() : null;
+            numberOfSomething = number;
+        }
+        public Program(IList<string> collection, int number)
+        {
+            var testList = collection;
+            numberOfSomething = number;
+        }
+
+        public int GetValue(int initial, long final, double interim, int test)
+        {
+             return 3;
+        }
+
+        public void SomeWork(int someArg)
+        {
+            var anotherList = new List<string>
+            {  // Doesnt count as block
+                ""Test1"",
+                ""Test2""
+            };
+
+            int someUselessValue = GetValue(1234567890, 1234567890123456789L, 123456789.1234567, 9876543210);
+
+            int temp = 0;
+
+            if(anotherList.Count > 0) 
+                return; // Doesnt count as block
+            else
+            {
+                Console.WriteLine(""Successful"");
+            }
+        }
+    }
+}";
         public const string ClassWithRegions = @"
 
 namespace TestDummy

@@ -14,9 +14,10 @@ namespace CSharpener.Logic.Tests.Sorting
     [TestFixture]
     public class CSharpSorterTests
     {
+        [TestCase(TestData.ClassWithMultipleConstructors, TestData.ClassWithMultipleConstructorsAfterSort)]
         [TestCase(TestData.InterfaceBeforeSorting, TestData.InterfaceAfterSorting)]
         [TestCase(TestData.RecordBeforeSorting, TestData.RecordAfterSorting)]
-        public void CodeTextWithInterface_WhenSorterIsRun_OutputsSortedCodeText(string inputString, string expectedOutput)
+        public void CodeText_WhenSorterIsRun_OutputsSortedCodeText(string inputString, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);
             CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
