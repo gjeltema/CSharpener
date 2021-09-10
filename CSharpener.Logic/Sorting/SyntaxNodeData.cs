@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// SyntaxNodeData.cs Copyright 2020 Craig Gjeltema
+// SyntaxNodeData.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Sorting
@@ -25,13 +25,17 @@ namespace Gjeltema.CSharpener.Logic.Sorting
 
         public string Identifier { get; private set; }
 
-        public bool IsConst => Modifiers.Contains(SyntaxKind.ConstKeyword);
+        public bool IsConst
+            => Modifiers.Contains(SyntaxKind.ConstKeyword);
 
-        public bool IsExtern => Modifiers.Contains(SyntaxKind.ExternKeyword);
+        public bool IsExtern
+            => Modifiers.Contains(SyntaxKind.ExternKeyword);
 
-        public bool IsReadonly => Modifiers.Contains(SyntaxKind.ReadOnlyKeyword);
+        public bool IsReadonly
+            => Modifiers.Contains(SyntaxKind.ReadOnlyKeyword);
 
-        public bool IsStatic => Modifiers.Contains(SyntaxKind.StaticKeyword);
+        public bool IsStatic
+            => Modifiers.Contains(SyntaxKind.StaticKeyword);
 
         public SyntaxKind Kind { get; }
 
@@ -75,6 +79,9 @@ namespace Gjeltema.CSharpener.Logic.Sorting
                 case OperatorDeclarationSyntax ods:
                     Identifier = ods.OperatorToken.ValueText;
                     return ods.Modifiers;
+                case ConversionOperatorDeclarationSyntax cods:
+                    Identifier = cods.ImplicitOrExplicitKeyword.ToString();
+                    return cods.Modifiers;
                 case DestructorDeclarationSyntax dsds:
                     Identifier = dsds.Identifier.ValueText;
                     return dsds.Modifiers;

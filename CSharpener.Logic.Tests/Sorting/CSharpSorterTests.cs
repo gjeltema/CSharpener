@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// CSharpSorterTests.cs Copyright 2020 Craig Gjeltema
+// CSharpSorterTests.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests.Sorting
@@ -32,7 +32,8 @@ namespace CSharpener.Logic.Tests.Sorting
 
         [TestCase(TestData.InterfaceBeforeSorting, TestData.InterfaceAfterSortingAndFormattingNewlines)]
         [TestCase(TestData.RecordBeforeSorting, TestData.RecordAfterSortingAndFormattingNewlines)]
-        public void CodeTextWithInterface_WhenSorterIsRunWithWhitespaceFormatter_OutputsSortedCodeText(string inputString, string expectedOutput)
+        [TestCase(TestData.StructBeforeSorting, TestData.StructAfterSorting)]
+        public void CodeText_WhenSorterIsRunWithWhitespaceFormatter_OutputsSortedCodeText(string inputString, string expectedOutput)
         {
             TestHelper.InitializeConfig(TestData.TestConfig);
             CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);

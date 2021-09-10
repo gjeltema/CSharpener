@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// NewlineFormatter.cs Copyright 2020 Craig Gjeltema
+// NewlineFormatter.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic.Trivia
@@ -43,6 +43,12 @@ namespace Gjeltema.CSharpener.Logic.Trivia
         {
             var formattedNode = FormatNewlines(node) as RecordDeclarationSyntax;
             return base.VisitRecordDeclaration(formattedNode);
+        }
+
+        public override SyntaxNode VisitStructDeclaration(StructDeclarationSyntax node)
+        {
+            var formattedNode = FormatNewlines(node) as StructDeclarationSyntax;
+            return base.VisitStructDeclaration(formattedNode);
         }
 
         private static SyntaxNode CleanLastTokenLeadingTrivia(SyntaxNode nodeToBeUpdated)

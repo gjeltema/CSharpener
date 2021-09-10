@@ -44,6 +44,12 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             return base.VisitRecordDeclaration(sortedRecordNode);
         }
 
+        public override SyntaxNode VisitStructDeclaration(StructDeclarationSyntax node)
+        {
+            StructDeclarationSyntax sortedStructNode = SortStructNode(node);
+            return base.VisitStructDeclaration(sortedStructNode);
+        }
+
         private ClassDeclarationSyntax SortClassNode(ClassDeclarationSyntax classDeclaration)
         {
             var membersOfClass = classDeclaration.Members.ToList();
@@ -81,6 +87,19 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             RecordDeclarationSyntax recordDeclarationNodeWithoutNodes = recordDeclaration.RemoveNodes(membersOfRecord, SyntaxRemoveOptions.KeepNoTrivia);
             RecordDeclarationSyntax finalRecordDeclarationNode = recordDeclarationNodeWithoutNodes.WithMembers(new SyntaxList<MemberDeclarationSyntax>(membersOfRecord));
             return finalRecordDeclarationNode;
+        }
+
+        private StructDeclarationSyntax SortStructNode(StructDeclarationSyntax structDeclaration)
+        {
+            var membersOfStruct = structDeclaration.Members.ToList();
+            var nodeData = membersOfStruct.ToDictionary(x => x, x => new CSharpSyntaxNodeData(x));
+
+            IComparer<MemberDeclarationSyntax> comparer = new NodeSorter(nodeData, sortingConfiguration);
+            membersOfStruct.Sort(comparer);
+
+            StructDeclarationSyntax structDeclarationNodeWithoutNodes = structDeclaration.RemoveNodes(membersOfStruct, SyntaxRemoveOptions.KeepNoTrivia);
+            StructDeclarationSyntax finalStructDeclarationNode = structDeclarationNodeWithoutNodes.WithMembers(new SyntaxList<MemberDeclarationSyntax>(membersOfStruct));
+            return finalStructDeclarationNode;
         }
 
         private sealed class NodeSorter : IComparer<MemberDeclarationSyntax>

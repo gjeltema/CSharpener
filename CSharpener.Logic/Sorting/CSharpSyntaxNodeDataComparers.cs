@@ -4,8 +4,10 @@
 
 namespace Gjeltema.CSharpener.Logic.Sorting
 {
+    using System;
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     public abstract class SyntaxNodeSorter : IComparer<CSharpSyntaxNodeData>
@@ -53,22 +55,72 @@ namespace Gjeltema.CSharpener.Logic.Sorting
 
     public sealed class KindSorter : SyntaxNodeSorterWithSortConfig
     {
+        private static readonly IDictionary<string, int> OperatorSortOrder = new Dictionary<string, int>
+        {
+            { "==", 1 },
+            { "!=", 2 },
+            { ">", 3 },
+            { ">=", 4 },
+            { "<", 5 },
+            { "<=", 6 }
+        };
+        private static readonly IDictionary<SyntaxKind, Func<CSharpSyntaxNodeData, CSharpSyntaxNodeData, int>> Sorters =
+            new Dictionary<SyntaxKind, Func<CSharpSyntaxNodeData, CSharpSyntaxNodeData, int>>
+            {
+                { SyntaxKind.OperatorDeclaration, (l, r) => SortOperatorDeclaration(l, r) },
+                { SyntaxKind.ConversionOperatorDeclaration, (l, r) => SortConversionOperator(l, r) },
+            };
+
         public KindSorter(SortingConfiguration sortConfig) : base(sortConfig)
         { }
 
         public override int Compare(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
         {
-            if (leftData.Kind == rightData.Kind)
-                return 0;
+            SyntaxKind leftKind = leftData.Kind;
+            SyntaxKind rightKind = rightData.Kind;
 
-            if (!SortConfig.KindSortOrder.TryGetValue(leftData.Kind, out int leftSortOrder))
+            if (leftKind == rightKind)
+            {
+                if (Sorters.TryGetValue(leftKind, out Func<CSharpSyntaxNodeData, CSharpSyntaxNodeData, int> comparer))
+                    return comparer(leftData, rightData);
+                return 0;
+            }
+
+            if (!SortConfig.KindSortOrder.TryGetValue(leftKind, out int leftSortOrder))
             {
                 return 1;
             }
 
-            if (!SortConfig.KindSortOrder.TryGetValue(rightData.Kind, out int rightSortOrder))
+            if (!SortConfig.KindSortOrder.TryGetValue(rightKind, out int rightSortOrder))
             {
                 return -1;
+            }
+
+            return leftSortOrder < rightSortOrder ? -1 : 1;
+        }
+
+        private static int SortConversionOperator(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
+        {
+            int leftSortOrder = leftData.Identifier.Equals("implicit") ? 0 : 1;
+            int rightSortOrder = rightData.Identifier.Equals("implicit") ? 0 : 1;
+            return leftSortOrder < rightSortOrder ? -1 : 1;
+        }
+
+        private static int SortOperatorDeclaration(CSharpSyntaxNodeData leftData, CSharpSyntaxNodeData rightData)
+        {
+            if (!OperatorSortOrder.TryGetValue(leftData.Identifier, out int leftSortOrder))
+            {
+                leftSortOrder = 100;
+            }
+            if (!OperatorSortOrder.TryGetValue(rightData.Identifier, out int rightSortOrder))
+            {
+                rightSortOrder = 100;
+            }
+
+            if (leftSortOrder == rightSortOrder)
+            {
+                int identifierComparison = string.Compare(leftData.Identifier, rightData.Identifier);
+                return identifierComparison;
             }
 
             return leftSortOrder < rightSortOrder ? -1 : 1;
