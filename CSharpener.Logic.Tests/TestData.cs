@@ -239,6 +239,7 @@ Count();
     /// </summary>
     public class Program
     {
+
         private int numberOfSomething; // End of line comment
         public Program()
         {
@@ -260,11 +261,11 @@ Count();
             numberOfSomething = number;
         }
 
+
         public int GetValue(int initial, long final, double interim, int test)
         {
              return 3;
         }
-
         public void SomeWork(int someArg)
         {
             var anotherList = new List<string>
@@ -491,7 +492,7 @@ namespace TestDummy
             input.ToString();
     }
 }";
-        public const string InterfaceAfterSorting = @"namespace TestDummy
+        public const string InterfaceAfterSorting = @"namespace InterfaceBeforeSorting
 {
 
     using System;
@@ -507,6 +508,25 @@ namespace TestDummy
 
         public Program()
         {
+        }
+
+        public double AABeginning(int data, string moarData)
+        {
+            return 0.0;
+        }
+
+        public string ZZShouldBeAtTheEnd(string moreInput)
+        {
+            return moreInput;
+        }
+
+        int IProgram.GetSomeData(int input)
+        {
+            return input;
+        }
+        void IProgram.LaterFunctionButNotLast()
+        {
+            
         }
     }
 
@@ -524,7 +544,7 @@ namespace TestDummy
 }";
         public const string InterfaceAfterSortingAndFormattingNewlines = @"
 
-namespace TestDummy
+namespace InterfaceBeforeSorting
 {
     using System;
 
@@ -539,6 +559,26 @@ namespace TestDummy
 
         public Program()
         {
+        }
+
+        public double AABeginning(int data, string moarData)
+        {
+            return 0.0;
+        }
+
+        public string ZZShouldBeAtTheEnd(string moreInput)
+        {
+            return moreInput;
+        }
+
+        int IProgram.GetSomeData(int input)
+        {
+            return input;
+        }
+
+        void IProgram.LaterFunctionButNotLast()
+        {
+            
         }
     }
 
@@ -556,7 +596,7 @@ namespace TestDummy
         string ZZShouldBeAtTheEnd(string moreInput);
     }
 }";
-        public const string InterfaceBeforeSorting = @"namespace TestDummy
+        public const string InterfaceBeforeSorting = @"namespace InterfaceBeforeSorting
 {
 
     using System;
@@ -568,10 +608,29 @@ namespace TestDummy
 
     class Program : IProgram
     {
+        void IProgram.LaterFunctionButNotLast()
+        {
+            
+        }
         private int numberOfSomething; // End of line comment
 
         public Program()
         {
+        }
+
+        public string ZZShouldBeAtTheEnd(string moreInput)
+        {
+            return moreInput;
+        }
+
+        int IProgram.GetSomeData(int input)
+        {
+            return input;
+        }
+
+        public double AABeginning(int data, string moarData)
+        {
+            return 0.0;
         }
     }
 
@@ -670,6 +729,172 @@ namespace TestDummy
         public string Description { get; init; }
     }
 }";
+        public const string StructAfterSorting = @"
+
+namespace TestSpace
+{
+    using System.Diagnostics;
+
+    [DebuggerDisplay(""{IdValue}"")]
+    public readonly struct VersionId : IEquatable<VersionId>, IComparable<VersionId>
+    {
+		private readonly int IdValue;
+
+		public VersionId(int versionId)
+        {
+            if (versionId <= 0)
+                throw new ArgumentException(""Invalid value was provided: "" + versionId, nameof(versionId));
+
+            IdValue = versionId;
+        }
+
+		public static VersionId NoId { get; } = new();
+
+		public static bool operator ==(VersionId left, VersionId right)
+            => left.Equals(right);
+
+        public static bool operator !=(VersionId left, VersionId right)
+            => !left.Equals(right);
+
+        public static bool operator >(VersionId left, VersionId right)
+           => left.CompareTo(right) > 0;
+
+        public static bool operator >=(VersionId left, VersionId right)
+        {
+            int comparison = left.CompareTo(right);
+            return comparison > -1;
+        }
+
+        public static bool operator <(VersionId left, VersionId right)
+            => left.CompareTo(right) < 0;
+
+        public static bool operator <=(VersionId left, VersionId right)
+        {
+            int comparison = left.CompareTo(right);
+            return comparison < 1;
+        }
+
+        public static implicit operator int(VersionId id) => id.IdValue;
+
+		public static explicit operator VersionId(int idValue)
+        {
+            if (idValue <= 0)
+                throw new InvalidCastException(""Cannot cast a value less than or equal to 0."");
+
+            return new(idValue);
+        }
+
+        public int CompareTo(VersionId other)
+        {
+            if (IdValue < other.IdValue)
+                return -1;
+            return IdValue == other.IdValue ? 0 : 1;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is VersionId aavId)
+                return Equals(aavId);
+            return false;
+        }
+
+        public bool Equals(VersionId other)
+            => IdValue == other.IdValue;
+
+        public override int GetHashCode()
+            => IdValue;
+
+        /// <summary>
+        /// Returns the value of this instance as a string.
+        /// </summary>
+        public override string ToString()
+            => IdValue.ToString();
+    }
+}
+";
+        public const string StructBeforeSorting = @"namespace TestSpace
+{
+    using System.Diagnostics;
+
+    [DebuggerDisplay(""{IdValue}"")]
+    public readonly struct VersionId : IEquatable<VersionId>, IComparable<VersionId>
+    {
+
+        public static bool operator >=(VersionId left, VersionId right)
+        {
+            int comparison = left.CompareTo(right);
+            return comparison > -1;
+        }
+        public static bool operator <(VersionId left, VersionId right)
+            => left.CompareTo(right) < 0;
+
+        /// <summary>
+        /// Returns the value of this instance as a string.
+        /// </summary>
+        public override string ToString()
+            => IdValue.ToString();
+
+
+
+        public override int GetHashCode()
+            => IdValue;
+
+        public bool Equals(VersionId other)
+            => IdValue == other.IdValue;
+
+        
+
+        public static bool operator !=(VersionId left, VersionId right)
+            => !left.Equals(right);
+
+        
+		public static explicit operator VersionId(int idValue)
+        {
+            if (idValue <= 0)
+                throw new InvalidCastException(""Cannot cast a value less than or equal to 0."");
+
+            return new(idValue);
+        }
+
+        public static bool operator >(VersionId left, VersionId right)
+           => left.CompareTo(right) > 0;
+
+        public static bool operator <=(VersionId left, VersionId right)
+        {
+            int comparison = left.CompareTo(right);
+            return comparison < 1;
+        }
+		private readonly int IdValue;
+        
+		
+		public static VersionId NoId { get; } = new();
+
+        public int CompareTo(VersionId other)
+        {
+            if (IdValue < other.IdValue)
+                return -1;
+            return IdValue == other.IdValue ? 0 : 1;
+        }
+		
+		public static bool operator ==(VersionId left, VersionId right)
+            => left.Equals(right);
+        public static implicit operator int(VersionId id) => id.IdValue;
+        public override bool Equals(object obj)
+        {
+            if (obj is VersionId aavId)
+                return Equals(aavId);
+            return false;
+        }
+		public VersionId(int versionId)
+        {
+            if (versionId <= 0)
+                throw new ArgumentException(""Invalid value was provided: "" + versionId, nameof(versionId));
+
+            IdValue = versionId;
+        }
+    }
+}
+";
         public const string TestConfig =
 @"V 1.0
 
@@ -1010,173 +1235,5 @@ namespace TestDummy
     {
     }
 }";
-
-        public const string StructBeforeSorting = @"namespace TestSpace
-{
-	using System.Diagnostics;
-
-    [DebuggerDisplay(""{IdValue}"")]
-    public readonly struct VersionId : IEquatable<VersionId>, IComparable<VersionId>
-    {
-
-        public static bool operator >=(VersionId left, VersionId right)
-        {
-            int comparison = left.CompareTo(right);
-            return comparison > -1;
-        }
-        public static bool operator <(VersionId left, VersionId right)
-            => left.CompareTo(right) < 0;
-
-        /// <summary>
-        /// Returns the value of this instance as a string.
-        /// </summary>
-        public override string ToString()
-            => IdValue.ToString();
-
-
-
-        public override int GetHashCode()
-            => IdValue;
-
-        public bool Equals(VersionId other)
-            => IdValue == other.IdValue;
-
-        
-
-        public static bool operator !=(VersionId left, VersionId right)
-            => !left.Equals(right);
-
-        
-		public static explicit operator VersionId(int idValue)
-        {
-            if (idValue <= 0)
-                throw new InvalidCastException(""Cannot cast a value less than or equal to 0."");
-
-            return new(idValue);
-        }
-
-        public static bool operator >(VersionId left, VersionId right)
-           => left.CompareTo(right) > 0;
-
-        public static bool operator <=(VersionId left, VersionId right)
-        {
-            int comparison = left.CompareTo(right);
-            return comparison < 1;
-        }
-		private readonly int IdValue;
-        
-		
-		public static VersionId NoId { get; } = new();
-
-        public int CompareTo(VersionId other)
-        {
-            if (IdValue < other.IdValue)
-                return -1;
-            return IdValue == other.IdValue ? 0 : 1;
-        }
-		
-		public static bool operator ==(VersionId left, VersionId right)
-            => left.Equals(right);
-        public static implicit operator int(VersionId id) => id.IdValue;
-        public override bool Equals(object obj)
-        {
-            if (obj is VersionId aavId)
-                return Equals(aavId);
-            return false;
-        }
-		public VersionId(int versionId)
-        {
-            if (versionId <= 0)
-                throw new ArgumentException(""Invalid value was provided: "" + versionId, nameof(versionId));
-
-            IdValue = versionId;
-        }
-    }
-}
-";
-
-        public const string StructAfterSorting = @"
-namespace TestSpace
-{
-    using System.Diagnostics;
-
-    [DebuggerDisplay(""{IdValue}"")]
-    public readonly struct VersionId : IEquatable<VersionId>, IComparable<VersionId>
-    {
-		private readonly int IdValue;
-
-		public VersionId(int versionId)
-        {
-            if (versionId <= 0)
-                throw new ArgumentException(""Invalid value was provided: "" + versionId, nameof(versionId));
-
-            IdValue = versionId;
-        }
-
-		public static VersionId NoId { get; } = new();
-
-		public static bool operator ==(VersionId left, VersionId right)
-            => left.Equals(right);
-
-        public static bool operator !=(VersionId left, VersionId right)
-            => !left.Equals(right);
-
-        public static bool operator >(VersionId left, VersionId right)
-           => left.CompareTo(right) > 0;
-
-        public static bool operator >=(VersionId left, VersionId right)
-        {
-            int comparison = left.CompareTo(right);
-            return comparison > -1;
-        }
-
-        public static bool operator <(VersionId left, VersionId right)
-            => left.CompareTo(right) < 0;
-
-        public static bool operator <=(VersionId left, VersionId right)
-        {
-            int comparison = left.CompareTo(right);
-            return comparison < 1;
-        }
-
-        public static implicit operator int(VersionId id) => id.IdValue;
-
-		public static explicit operator VersionId(int idValue)
-        {
-            if (idValue <= 0)
-                throw new InvalidCastException(""Cannot cast a value less than or equal to 0."");
-
-            return new(idValue);
-        }
-
-        public int CompareTo(VersionId other)
-        {
-            if (IdValue < other.IdValue)
-                return -1;
-            return IdValue == other.IdValue ? 0 : 1;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is VersionId aavId)
-                return Equals(aavId);
-            return false;
-        }
-
-        public bool Equals(VersionId other)
-            => IdValue == other.IdValue;
-
-        public override int GetHashCode()
-            => IdValue;
-
-        /// <summary>
-        /// Returns the value of this instance as a string.
-        /// </summary>
-        public override string ToString()
-            => IdValue.ToString();
-    }
-}
-
-";
     }
 }

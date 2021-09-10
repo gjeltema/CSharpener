@@ -633,14 +633,14 @@ private string _name;
 
         protected virtual bool worthless { get; } = false;
 
-        public static bool operator !=(Program left, Program right)
-        {
-            return !left.Equals(right);
-        }
-
         public static bool operator ==(Program left, Program right)
         {
             return left.Equals(right);
+        }
+
+        public static bool operator !=(Program left, Program right)
+        {
+            return !left.Equals(right);
         }
 
         [DllImport(@""C:\Native.dll"", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
@@ -743,15 +743,15 @@ namespace MoreBusyWork
 				get; private set;
 			}
 
-			public static bool operator !=(SomeGeneric<T, U> left, SomeGeneric<T, U> right)
-			{
-				return !left.Equals(right);
-			}
-
 			public static bool operator ==(SomeGeneric<T, U> left, SomeGeneric<T, U> right)
                 {
                     return left.Equals(right);
                 }
+
+			public static bool operator !=(SomeGeneric<T, U> left, SomeGeneric<T, U> right)
+			{
+				return !left.Equals(right);
+			}
 
 			public string DoWork(bool output)
 			{
@@ -891,14 +891,14 @@ private string _name;
 
         protected virtual bool worthless { get; } = false;
 
-        public static bool operator !=(Program left, Program right)
-        {
-            return !left.Equals(right);
-        }
-
         public static bool operator ==(Program left, Program right)
         {
             return left.Equals(right);
+        }
+
+        public static bool operator !=(Program left, Program right)
+        {
+            return !left.Equals(right);
         }
 
         [DllImport(@""C:\Native.dll"", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
@@ -1001,15 +1001,15 @@ namespace MoreBusyWork
 				get; private set;
 			}
 
-			public static bool operator !=(SomeGeneric<T, U> left, SomeGeneric<T, U> right)
-			{
-				return !left.Equals(right);
-			}
-
 			public static bool operator ==(SomeGeneric<T, U> left, SomeGeneric<T, U> right)
                 {
                     return left.Equals(right);
                 }
+
+			public static bool operator !=(SomeGeneric<T, U> left, SomeGeneric<T, U> right)
+			{
+				return !left.Equals(right);
+			}
 
 			public string DoWork(bool output)
 			{
