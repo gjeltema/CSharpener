@@ -8,6 +8,7 @@ namespace Gjeltema.CSharpener.Commands
     using System.ComponentModel.Design;
     using System.Diagnostics;
     using System.IO;
+    using Gjeltema.CSharpener.Logic.AccessLevel;
     using Gjeltema.CSharpener.Logic.Trivia;
     using Gjeltema.CSharpener.Logic.Usings;
     using Gjeltema.CSharpener.Utility;
@@ -112,8 +113,11 @@ namespace Gjeltema.CSharpener.Commands
                 var fhf = new FileHeaderFormatter();
                 SyntaxNode fhfRoot = fhf.AddHeader(usingsRoot, fileName);
 
+                var accessModifier = new AccessLevelModifierFormatter();
+                SyntaxNode accessRoot = accessModifier.Visit(fhfRoot);
+
                 var newLineFormatter = new NewlineFormatter();
-                SyntaxNode newLineRoot = newLineFormatter.Visit(fhfRoot);
+                SyntaxNode newLineRoot = newLineFormatter.Visit(accessRoot);
 
                 var ebf = new ExpressionBodiedFormatter();
                 SyntaxNode ebfRoot = ebf.Visit(newLineRoot);

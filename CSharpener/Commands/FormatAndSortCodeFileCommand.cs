@@ -8,6 +8,7 @@ namespace Gjeltema.CSharpener.Commands
     using System.ComponentModel.Design;
     using System.Diagnostics;
     using System.IO;
+    using Gjeltema.CSharpener.Logic.AccessLevel;
     using Gjeltema.CSharpener.Logic.Sorting;
     using Gjeltema.CSharpener.Logic.Trivia;
     using Gjeltema.CSharpener.Logic.Usings;
@@ -113,8 +114,11 @@ namespace Gjeltema.CSharpener.Commands
                 var sorter = new CSharpSorter();
                 SyntaxNode sorterRoot = sorter.Visit(fhfRoot);
 
+                var accessModifier = new AccessLevelModifierFormatter();
+                SyntaxNode accessRoot = accessModifier.Visit(sorterRoot);
+
                 var newLineFormatter = new NewlineFormatter();
-                SyntaxNode newLineRoot = newLineFormatter.Visit(sorterRoot);
+                SyntaxNode newLineRoot = newLineFormatter.Visit(accessRoot);
 
                 var ebf = new ExpressionBodiedFormatter();
                 SyntaxNode ebfRoot = ebf.Visit(newLineRoot);

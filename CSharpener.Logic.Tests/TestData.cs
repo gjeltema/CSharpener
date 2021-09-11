@@ -1235,5 +1235,175 @@ namespace TestDummy
     {
     }
 }";
+        public const string ClassBeforeAccessLevelModifierFormat = @"namespace InterfaceBeforeSorting
+{
+
+    using System;
+    using System.Diagnostics;
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+    class Program : IProgram
+    {
+        void IProgram.LaterFunctionButNotLast()
+        {
+            
+        }
+        int numberOfSomething; // End of line comment
+
+        public Program()
+        {
+        }
+        [Conditional(""Debug"")]
+        string ZZShouldBeAtTheEnd(string moreInput)
+        {
+            return moreInput;
+        }
+
+        int GetSomeData(int input)
+        {
+            return input;
+        }
+
+        internal double AABeginning(int data, string moarData)
+        {
+            return 0.0;
+        }
+
+        int Sum => 3;
+        public bool IsAvailable { get; private set; }
+    }
+
+    enum DocStatus : byte
+    {
+        Good,
+        Bad
+    }
+
+    public enum Uptime
+    {
+        Good,
+        Ok,
+        Terrible
+    }
+
+    /// <summary>
+    /// This is the interface that declares some useful functionality.
+    /// </summary>
+    interface IProgram
+    {
+        void LaterFunctionButNotLast();
+    }
+
+    readonly struct IdValue
+    {
+        const int DefaultValue = 3;
+        IdValue(int newValue) { Value = newValue; }
+        internal int Value { get; }
+    }
+
+    internal class TestClass
+    {
+        TestClass() {}
+
+        protected internal int State;
+    }
+
+    public record Status(int state, bool valid);
+
+    record Doc
+    {
+        public int Initialized { get; init; }
+    }
+
+
+}";
+        public const string ClassAfterAccessLevelModifierFormat = @"namespace InterfaceBeforeSorting
+{
+
+    using System;
+    using System.Diagnostics;
+
+    /// <summary>
+    /// This is the class that implements some useful functionality.
+    /// </summary>
+    [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
+internal     class Program : IProgram
+    {
+        void IProgram.LaterFunctionButNotLast()
+        {
+            
+        }
+        private int numberOfSomething; // End of line comment
+
+        public Program()
+        {
+        }
+        [Conditional(""Debug"")]
+private         string ZZShouldBeAtTheEnd(string moreInput)
+        {
+            return moreInput;
+        }
+
+        private int GetSomeData(int input)
+        {
+            return input;
+        }
+
+        internal double AABeginning(int data, string moarData)
+        {
+            return 0.0;
+        }
+
+        private int Sum => 3;
+        public bool IsAvailable { get; private set; }
+    }
+
+    public enum DocStatus : byte
+    {
+        Good,
+        Bad
+    }
+
+    public enum Uptime
+    {
+        Good,
+        Ok,
+        Terrible
+    }
+
+    /// <summary>
+    /// This is the interface that declares some useful functionality.
+    /// </summary>
+    internal interface IProgram
+    {
+        private void LaterFunctionButNotLast();
+    }
+
+    internal readonly struct IdValue
+    {
+        private const int DefaultValue = 3;
+        private IdValue(int newValue) { Value = newValue; }
+        internal int Value { get; }
+    }
+
+    internal class TestClass
+    {
+        private TestClass() {}
+
+        protected internal int State;
+    }
+
+    public record Status(int state, bool valid);
+
+    internal record Doc
+    {
+        public int Initialized { get; init; }
+    }
+
+
+}";
     }
 }

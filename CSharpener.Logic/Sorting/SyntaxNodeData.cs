@@ -18,7 +18,7 @@ namespace Gjeltema.CSharpener.Logic.Sorting
             Kind = node.Kind();
             SyntaxTokenList modifiers = GetSyntaxPropertiesForNode(node);
             Modifiers = ModifiersHelper.GetNonAccessibilityModifiers(modifiers);
-            Access = ModifiersHelper.GetAccessibility(Kind, modifiers);
+            Access = ModifiersHelper.GetAccessibilityOrDefault(Kind, modifiers);
         }
 
         public AccessModifier Access { get; }

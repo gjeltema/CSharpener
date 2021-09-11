@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// ModifiersHelper.cs Copyright 2020 Craig Gjeltema
+// ModifiersHelper.cs Copyright 2021 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace Gjeltema.CSharpener.Logic
@@ -34,9 +34,21 @@ namespace Gjeltema.CSharpener.Logic
             { SyntaxKind.EnumDeclaration, AccessModifier.Public },
             { SyntaxKind.ClassDeclaration, AccessModifier.Internal },
             { SyntaxKind.InterfaceDeclaration, AccessModifier.Internal },
+            { SyntaxKind.StructDeclaration, AccessModifier.Internal },
+            { SyntaxKind.RecordDeclaration, AccessModifier.Internal }
+        };
+        private static readonly IDictionary<AccessModifier, SyntaxTokenList> syntaxTokensForAccessibility = new Dictionary<AccessModifier, SyntaxTokenList>()
+        {
+            { AccessModifier.Public, SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)) },
+            { AccessModifier.Internal, SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.InternalKeyword)) },
+            { AccessModifier.Protected, SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)) },
+            { AccessModifier.ProtectedInternal, SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword), SyntaxFactory.Token(SyntaxKind.InternalKeyword)) },
+            { AccessModifier.Private, SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)) },
+            { AccessModifier.PrivateProtected, SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword), SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)) },
+            { AccessModifier.NotExplicit, SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)) },
         };
 
-        public static AccessModifier GetAccessibility(SyntaxKind nodeKind, SyntaxTokenList modifiers)
+        public static AccessModifier GetAccessibility(SyntaxTokenList modifiers)
         {
             AccessModifier modifier = AccessModifier.NotExplicit;
             IEnumerable<SyntaxKind> accessModifiers = modifiers.Select(st => st.Kind()).Where(sk => accessibilityModifiersForSyntaxKind.Keys.Contains(sk));
@@ -45,13 +57,33 @@ namespace Gjeltema.CSharpener.Logic
                 modifier = DetermineAccessModifier(accessModifier, modifier);
             }
 
+            return modifier;
+        }
+
+        public static AccessModifier GetAccessibilityOrDefault(SyntaxKind nodeKind, SyntaxTokenList modifiers)
+        {
+            AccessModifier modifier = GetAccessibility(modifiers);
+
             if (modifier == AccessModifier.NotExplicit)
             {
-                modifier = SetDefaultAccessibility(nodeKind);
+                modifier = GetDefaultAccessibility(nodeKind);
             }
 
             return modifier;
         }
+
+        public static AccessModifier GetDefaultAccessibility(SyntaxKind kind)
+        {
+            if (defaultAccessForSyntaxKind.TryGetValue(kind, out AccessModifier defaultAccess))
+            {
+                return defaultAccess;
+            }
+
+            return AccessModifier.Private;
+        }
+
+        public static SyntaxTokenList GetModifiers(AccessModifier modifier)
+            => syntaxTokensForAccessibility[modifier];
 
         public static ICollection<SyntaxKind> GetNonAccessibilityModifiers(SyntaxTokenList modifiers)
         {
@@ -80,16 +112,6 @@ namespace Gjeltema.CSharpener.Logic
             }
 
             return existingModifier;
-        }
-
-        private static AccessModifier SetDefaultAccessibility(SyntaxKind kind)
-        {
-            if (defaultAccessForSyntaxKind.TryGetValue(kind, out AccessModifier defaultAccess))
-            {
-                return defaultAccess;
-            }
-
-            return AccessModifier.Private;
         }
     }
 }
