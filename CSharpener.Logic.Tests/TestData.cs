@@ -1379,7 +1379,7 @@ private         string ZZShouldBeAtTheEnd(string moreInput)
     /// </summary>
     internal interface IProgram
     {
-        private void LaterFunctionButNotLast();
+        void LaterFunctionButNotLast();
     }
 
     internal readonly struct IdValue

@@ -48,6 +48,9 @@ namespace Gjeltema.CSharpener.Logic.AccessLevel
             if (node.ExplicitInterfaceSpecifier != null)
                 return node;
 
+            if (node.Parent is InterfaceDeclarationSyntax)
+                return node;
+
             var updatedMethodNode = AddAccessModifierIfNotPresent(node) as MethodDeclarationSyntax;
             return base.VisitMethodDeclaration(updatedMethodNode);
         }
