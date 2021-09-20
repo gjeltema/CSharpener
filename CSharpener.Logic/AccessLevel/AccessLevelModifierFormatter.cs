@@ -57,6 +57,12 @@ namespace Gjeltema.CSharpener.Logic.AccessLevel
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
+            if (node.ExplicitInterfaceSpecifier != null)
+                return node;
+
+            if (node.Parent is InterfaceDeclarationSyntax)
+                return node;
+
             var updatedPropertyNode = AddAccessModifierIfNotPresent(node) as PropertyDeclarationSyntax;
             return base.VisitPropertyDeclaration(updatedPropertyNode);
         }

@@ -1274,6 +1274,8 @@ namespace TestDummy
 
         int Sum => 3;
         public bool IsAvailable { get; private set; }
+
+        bool UnAvailable { get; }
     }
 
     enum DocStatus : byte
@@ -1295,6 +1297,8 @@ namespace TestDummy
     interface IProgram
     {
         void LaterFunctionButNotLast();
+
+        bool IsAvailable { get; }
     }
 
     readonly struct IdValue
@@ -1359,6 +1363,8 @@ private         string ZZShouldBeAtTheEnd(string moreInput)
 
         private int Sum => 3;
         public bool IsAvailable { get; private set; }
+
+        private bool UnAvailable { get; }
     }
 
     public enum DocStatus : byte
@@ -1380,6 +1386,8 @@ private         string ZZShouldBeAtTheEnd(string moreInput)
     internal interface IProgram
     {
         void LaterFunctionButNotLast();
+
+        bool IsAvailable { get; }
     }
 
     internal readonly struct IdValue
