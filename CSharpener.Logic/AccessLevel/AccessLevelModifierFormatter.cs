@@ -21,6 +21,10 @@ namespace Gjeltema.CSharpener.Logic.AccessLevel
 
         public override SyntaxNode VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
         {
+            // Dont add a modifier to a static constructor
+            if (node.Modifiers.Any(SyntaxKind.StaticKeyword))
+                return base.VisitConstructorDeclaration(node);
+
             var updatedConstructorNode = AddAccessModifierIfNotPresent(node) as ConstructorDeclarationSyntax;
             return base.VisitConstructorDeclaration(updatedConstructorNode);
         }
@@ -45,9 +49,11 @@ namespace Gjeltema.CSharpener.Logic.AccessLevel
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
+            // Dont add a modifier to an explicitly implemented interface function
             if (node.ExplicitInterfaceSpecifier != null)
                 return node;
 
+            // Dont add modifiers to interface functions
             if (node.Parent is InterfaceDeclarationSyntax)
                 return node;
 

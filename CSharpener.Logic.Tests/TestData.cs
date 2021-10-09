@@ -1247,6 +1247,7 @@ namespace TestDummy
     [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
     class Program : IProgram
     {
+        static int SomeValue;
         void IProgram.LaterFunctionButNotLast()
         {
             
@@ -1262,9 +1263,18 @@ namespace TestDummy
             return moreInput;
         }
 
+        static Program()
+        {
+            SomeValue = 3;
+        }
+
         int GetSomeData(int input)
         {
             return input;
+        }
+
+        ~Program()
+        {
         }
 
         internal double AABeginning(int data, string moarData)
@@ -1336,6 +1346,7 @@ namespace TestDummy
     [Guid(""ec250ee0-f916-4335-9764-17b6cd3573fc"")]
 internal     class Program : IProgram
     {
+        private static int SomeValue;
         void IProgram.LaterFunctionButNotLast()
         {
             
@@ -1351,9 +1362,18 @@ private         string ZZShouldBeAtTheEnd(string moreInput)
             return moreInput;
         }
 
+        static Program()
+        {
+            SomeValue = 3;
+        }
+
         private int GetSomeData(int input)
         {
             return input;
+        }
+
+        ~Program()
+        {
         }
 
         internal double AABeginning(int data, string moarData)
