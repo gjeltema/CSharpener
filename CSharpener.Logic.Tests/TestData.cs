@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// TestData.cs Copyright 2021 Craig Gjeltema
+// TestData.cs Copyright 2022 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests
@@ -974,6 +974,77 @@ using System.Collections.ObjectModel;
     }
 }
 ";
+        public const string UsingsInAndOutsideFileScopedNamespace = @"
+using Microsoft.CodeAnalysis.CSharp;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
+namespace TestDummy
+
+using System.Collections.Generic;
+using TestDummy.ExtraNS;
+using System.Linq;
+using static System.Math;
+using BNS;
+// Third comment
+using System.Text;
+using another = TestDummy.ExtraNS;
+using System.Threading.Tasks;
+using System;
+
+class Program : SecondClass
+{
+
+}
+";
+        public const string UsingsInAndOutsideFileScopedNamespaceAfterUsingsPlacer = @"
+namespace TestDummy
+
+using System.Collections.Generic;
+using TestDummy.ExtraNS;
+using System.Linq;
+using static System.Math;
+using BNS;
+// Third comment
+using System.Text;
+using another = TestDummy.ExtraNS;
+using System.Threading.Tasks;
+using System;
+using Microsoft.CodeAnalysis.CSharp;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
+
+
+class Program : SecondClass
+{
+
+}
+";
+        public const string UsingsInAndOutsideFileScopedNamespaceAfterUsingsPlacerAndHeader = @"// -------------------------------------------
+// Test Header for ThirdTestFile.cs Copyright 2022
+// -------------------------------------------
+
+namespace TestDummy
+
+using System.Collections.Generic;
+using TestDummy.ExtraNS;
+using System.Linq;
+using static System.Math;
+using BNS;
+// Third comment
+using System.Text;
+using another = TestDummy.ExtraNS;
+using System.Threading.Tasks;
+using System;
+using Microsoft.CodeAnalysis.CSharp;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
+
+
+class Program : SecondClass
+{
+
+}
+";
         public const string UsingsInAndOutsideNamespace = @"
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -1002,7 +1073,7 @@ namespace TestDummy
 }
 ";
         public const string UsingsInAndOutsideNamespaceAfterFileHeader = @"// -------------------------------------------
-// Test Header for TestFile.cs Copyright 2021
+// Test Header for TestFile.cs Copyright 2022
 // -------------------------------------------
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -1031,7 +1102,7 @@ namespace TestDummy
 }
 ";
         public const string UsingsInAndOutsideNamespaceAfterNewline = @"// -------------------------------------------
-// Test Header for TestFile.cs Copyright 2021
+// Test Header for TestFile.cs Copyright 2022
 // -------------------------------------------
 
 namespace TestDummy
@@ -1060,7 +1131,7 @@ using System.Collections.ObjectModel;
 }
 ";
         public const string UsingsInAndOutsideNamespaceWithCorrectFileHeader = @"// -------------------------------------------
-// Test Header for TestFile.cs Copyright 2021
+// Test Header for TestFile.cs Copyright 2022
 // -------------------------------------------
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -1149,7 +1220,7 @@ namespace TestDummy
     }
 }";
         public const string UsingsOnlyOutsideNamespaceAfterFileHeader = @"// -------------------------------------------
-// Test Header for AnotherTestFile.cs Copyright 2021
+// Test Header for AnotherTestFile.cs Copyright 2022
 // -------------------------------------------
 
 using System.Runtime.InteropServices;
@@ -1181,7 +1252,7 @@ namespace TestDummy
     }
 }";
         public const string UsingsOnlyOutsideNamespaceAfterNewline = @"// -------------------------------------------
-// Test Header for AnotherTestFile.cs Copyright 2021
+// Test Header for AnotherTestFile.cs Copyright 2022
 // -------------------------------------------
 
 namespace TestDummy
@@ -1206,7 +1277,7 @@ using System.Collections.ObjectModel;
     }
 }";
         public const string UsingsOnlyOutsideNamespaceWithCorrectFileHeader = @"// -------------------------------------------
-// Test Header for AnotherTestFile.cs Copyright 2021
+// Test Header for AnotherTestFile.cs Copyright 2022
 // -------------------------------------------
 
 using System.Runtime.InteropServices;

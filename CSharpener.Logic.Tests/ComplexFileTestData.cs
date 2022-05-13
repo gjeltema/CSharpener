@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// ComplexFileTestData.cs Copyright 2021 Craig Gjeltema
+// ComplexFileTestData.cs Copyright 2022 Craig Gjeltema
 // -----------------------------------------------------------------------
 
 namespace CSharpener.Logic.Tests
@@ -538,7 +538,7 @@ private string _name;
         //====================================================================
 
         public const string UsingsInAndOutsideNamespaceAfterCompositeRun = @"// -------------------------------------------
-// Test Header for TestFile.cs Copyright 2021
+// Test Header for TestFile.cs Copyright 2022
 // -------------------------------------------
 
 namespace TestDummy
@@ -798,7 +798,7 @@ namespace MoreBusyWork
 }
 ";
         public const string UsingsOnlyOutsideNamespaceAfterCompositeRun = @"// -------------------------------------------
-// Test Header for AnotherTestFile.cs Copyright 2021
+// Test Header for AnotherTestFile.cs Copyright 2022
 // -------------------------------------------
 
 namespace TestDummy

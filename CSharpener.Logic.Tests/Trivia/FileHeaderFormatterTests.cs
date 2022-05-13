@@ -1,31 +1,31 @@
 ﻿// -----------------------------------------------------------------------
-// FileHeaderFormatterTests.cs Copyright 2020 Craig Gjeltema
+// FileHeaderFormatterTests.cs Copyright 2022 Craig Gjeltema
 // -----------------------------------------------------------------------
 
-namespace CSharpener.Logic.Tests.Trivia
+namespace CSharpener.Logic.Tests.Trivia;
+
+using System.Diagnostics;
+using Gjeltema.CSharpener.Logic.Trivia;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using NUnit.Framework;
+
+[TestFixture]
+public class FileHeaderFormatterTests
 {
-    using System.Diagnostics;
-    using Gjeltema.CSharpener.Logic.Trivia;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using NUnit.Framework;
-
-    [TestFixture]
-    public class FileHeaderFormatterTests
+    [TestCase(TestData.UsingsInAndOutsideNamespace, "TestFile.cs", TestData.UsingsInAndOutsideNamespaceAfterFileHeader)]
+    [TestCase(TestData.UsingsOnlyOutsideNamespace, "AnotherTestFile.cs", TestData.UsingsOnlyOutsideNamespaceAfterFileHeader)]
+    public void CodeText_WhenHeaderFormatterRun_OutputsExpectedText(string inputString, string fileName, string expectedOutput)
     {
-        [TestCase(TestData.UsingsInAndOutsideNamespace, "TestFile.cs", TestData.UsingsInAndOutsideNamespaceAfterFileHeader)]
-        [TestCase(TestData.UsingsOnlyOutsideNamespace, "AnotherTestFile.cs", TestData.UsingsOnlyOutsideNamespaceAfterFileHeader)]
-        public void CodeText_WhenHeaderFormatterRun_OutputsExpectedText(string inputString, string fileName, string expectedOutput)
-        {
-            TestHelper.InitializeConfig(TestData.TestConfig);
-            var root = TestHelper.CreateCSharpSyntaxRoot(inputString) as CSharpSyntaxNode;
+        TestHelper.InitializeConfig(TestData.TestConfig);
+        CSharpSyntaxNode root = TestHelper.CreateCSharpSyntaxRoot(inputString);
 
-            var fhh = new FileHeaderFormatter();
-            SyntaxNode fhhRoot = fhh.AddHeader(root, fileName);
+        var fhh = new FileHeaderFormatter();
+        SyntaxNode fhhRoot = fhh.AddHeader(root, fileName);
 
-            string actualOutput = fhhRoot.ToFullString();
-            Debug.WriteLine(actualOutput);
-            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
-        }
+        string actualOutput = fhhRoot.ToFullString();
+        Debug.WriteLine(actualOutput);
+        Assert.That(actualOutput, Is.EqualTo(expectedOutput));
     }
 }
+

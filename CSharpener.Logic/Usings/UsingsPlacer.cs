@@ -48,7 +48,9 @@ namespace Gjeltema.CSharpener.Logic.Usings
             foreach (SyntaxNode node in rootNode.ChildNodes())
             {
                 if (node is UsingDirectiveSyntax usingNode)
+                {
                     usingNodes.Add(usingNode);
+                }
                 else if (node is NamespaceDeclarationSyntax)
                 {
                     namespaceNodeFound = true;
